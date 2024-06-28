@@ -1,0 +1,79 @@
+// POST /users - Registro de un nuevo usuario
+request:
+payload: {
+    email: String, 
+    password: String, 
+    username: String,
+    picture: String
+}
+
+// POST /login - Iniciar sesión
+request:
+payload: {
+    email: String,
+    password: String
+}
+response: {
+    token: String,
+    user: {
+        id: Number,
+        email: String,
+        username: String,
+        picture: String
+    }
+}
+
+// GET /events - Obtener todos los eventos
+response: {
+    events: [{
+        id: Number,
+        title: String,
+        description: String,
+        date: String,
+        location: String,
+        ticketPrice: Number,
+        ticketsAvailable: Number
+    }]
+}
+
+// POST /events - Crear un nuevo evento
+request:
+payload: {
+    title: String,
+    description: String,
+    date: String,
+    location: String,
+    ticketPrice: Number,
+    ticketsAvailable: Number
+}
+
+// PUT /events/{eventId} - Editar un evento
+request:
+payload: {
+    title: String,
+    description: String,
+    date: String,
+    location: String,
+    ticketPrice: Number,
+    ticketsAvailable: Number
+}
+
+// DELETE /events/{eventId} - Eliminar un evento
+
+// POST /contact - Enviar mensaje de contacto
+request:
+payload: {
+    name: String,
+    email: String,
+    message: String
+}
+response: {
+    status: String,
+    message: String
+}
+
+// GET /about - Obtener información sobre la página "Acerca de"
+response: {
+    title: String,
+    content: String
+}
