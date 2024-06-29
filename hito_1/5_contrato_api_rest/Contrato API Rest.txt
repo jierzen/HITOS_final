@@ -1,3 +1,5 @@
+//Sección Pública
+
 // POST /users - Registro de un nuevo usuario
 request:
 payload: {
@@ -36,35 +38,25 @@ response: {
     }]
 }
 
-// POST /events - Crear un nuevo evento
-request:
-payload: {
-    title: String,
-    description: String,
-    date: String,
-    location: String,
-    ticketPrice: Number,
-    ticketsAvailable: Number
+// GET /events/{eventId} - Obtener detalles de un evento específico
+response: {
+    event: {
+        id: Number,
+        title: String,
+        description: String,
+        date: String,
+        location: String,
+        ticketPrice: Number,
+        ticketsAvailable: Number
+    }
 }
 
-// PUT /events/{eventId} - Editar un evento
-request:
-payload: {
-    title: String,
-    description: String,
-    date: String,
-    location: String,
-    ticketPrice: Number,
-    ticketsAvailable: Number
-}
-
-// DELETE /events/{eventId} - Eliminar un evento
-
-// POST /contact - Enviar mensaje de contacto
+// POST /contact - Enviar mensaje de contacto a Administrador Web
 request:
 payload: {
     name: String,
     email: String,
+    phone: String (optional),
     message: String
 }
 response: {
@@ -76,4 +68,106 @@ response: {
 response: {
     title: String,
     content: String
+}
+
+//Sección Privada
+
+// GET /users/{userId} - Obtener información del perfil del usuario
+headers:
+Authorization: Bearer <token>
+response: {
+    user: {
+        id: Number,
+        email: String,
+        username: String,
+        picture: String
+    }
+}
+
+// PUT /users/{userId} - Actualizar perfil del usuario
+headers:
+Authorization: Bearer <token>
+request:
+payload: {
+    username: String (optional),
+    password: String (optional),
+    email: String (optional),
+    picture: String (optional)
+}
+response: {
+    status: String,
+    message: String
+}
+
+// DELETE /users/{userId} - Eliminar cuenta de usuario
+headers:
+Authorization: Bearer <token>
+response: {
+    status: String,
+    message: String
+}
+
+// GET /tickets/{ticketId} - Obtener detalles de una entrada específica
+headers:
+Authorization: Bearer <token>
+response: {
+    ticket: {
+        ticketId: Number,
+        eventId: Number,
+        purchaseDate: String
+    }
+}
+
+// POST /favorites - Añadir un evento a favoritos
+headers:
+Authorization: Bearer <token>
+request:
+payload: {
+    userId: Number,
+    eventId: Number
+}
+response: {
+    status: String,
+    message: String
+}
+
+// DELETE /favorites/{eventId} - Eliminar un evento de favoritos
+headers:
+Authorization: Bearer <token>
+response: {
+    status: String,
+    message: String
+}
+
+// POST /cart - Añadir un evento al carrito de compras
+headers:
+Authorization: Bearer <token>
+request:
+payload: {
+    userId: Number,
+    eventId: Number,
+    quantity: Number
+}
+response: {
+    status: String,
+    message: String
+}
+
+// GET /cart - Obtener todos los eventos en el carrito de compras
+headers:
+Authorization: Bearer <token>
+response: {
+    items: [{
+        cartId: Number,
+        eventId: Number,
+        quantity: Number
+    }]
+}
+
+// DELETE /cart/{cartId} - Eliminar un evento del carrito de compras
+headers:
+Authorization: Bearer <token>
+response: {
+    status: String,
+    message: String
 }
