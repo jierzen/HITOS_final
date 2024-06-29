@@ -70,6 +70,7 @@ response: {
     content: String
 }
 
+
 //Sección Privada
 
 // GET /users/{userId} - Obtener información del perfil del usuario
@@ -107,23 +108,116 @@ response: {
     message: String
 }
 
-// GET /tickets/{ticketId} - Obtener detalles de una entrada específica
+// GET /users/{userId}/events - Obtener eventos publicados por el usuario
+headers:
+Authorization: Bearer <token>
+response: {
+    events: [{
+        id: Number,
+        title: String,
+        description: String,
+        date: String,
+        location: String,
+        ticketPrice: Number,
+        ticketsAvailable: Number
+    }]
+}
+
+// POST /users/{userId}/events - Publicar un nuevo evento por el usuario
+headers:
+Authorization: Bearer <token>
+request:
+payload: {
+    title: String,
+    description: String,
+    date: String,
+    location: String,
+    ticketPrice: Number,
+    ticketsAvailable: Number
+}
+response: {
+    status: String,
+    message: String,
+    eventId: Number
+}
+
+// PUT /users/{userId}/events/{eventId} - Editar un evento publicado por el usuario
+headers:
+Authorization: Bearer <token>
+request:
+payload: {
+    title: String (optional),
+    description: String (optional),
+    date: String (optional),
+    location: String (optional),
+    ticketPrice: Number (optional),
+    ticketsAvailable: Number (optional)
+}
+response: {
+    status: String,
+    message: String
+}
+
+// DELETE /users/{userId}/events/{eventId} - Eliminar un evento publicado por el usuario
+headers:
+Authorization: Bearer <token>
+response: {
+    status: String,
+    message: String
+}
+
+// GET /users/{userId}/tickets - Obtener todas las entradas compradas por el usuario
+headers:
+Authorization: Bearer <token>
+response: {
+    tickets: [{
+        ticketId: Number,
+        eventId: Number,
+        eventName: String,
+        eventDate: String,
+        purchaseDate: String,
+        quantity: Number
+    }]
+}
+
+// GET /users/{userId}/tickets/{ticketId} - Obtener detalles de una entrada específica
 headers:
 Authorization: Bearer <token>
 response: {
     ticket: {
         ticketId: Number,
         eventId: Number,
+        eventName: String,
+        eventDate: String,
+        eventLocation: String,
+        ticketPrice: Number,
+        quantity: Number,
         purchaseDate: String
     }
 }
 
-// POST /favorites - Añadir un evento a favoritos
+
+// GET /users/{userId}/favorites - Listar todos los eventos favoritos de un usuario
+headers:
+Authorization: Bearer <token>
+response: {
+    favorites: [{
+        eventId: Number,
+        title: String,
+        description: String,
+        date: String,
+        location: String,
+        ticketPrice: Number,
+        ticketsAvailable: Number
+    }]
+}
+
+
+// POST /users/{userId}/favorites - Añadir un evento a favoritos
 headers:
 Authorization: Bearer <token>
 request:
 payload: {
-    userId: Number,
     eventId: Number
 }
 response: {
@@ -131,7 +225,7 @@ response: {
     message: String
 }
 
-// DELETE /favorites/{eventId} - Eliminar un evento de favoritos
+// DELETE /users/{userId}/favorites/{eventId} - Eliminar un evento de los favoritos
 headers:
 Authorization: Bearer <token>
 response: {
@@ -139,21 +233,7 @@ response: {
     message: String
 }
 
-// POST /cart - Añadir un evento al carrito de compras
-headers:
-Authorization: Bearer <token>
-request:
-payload: {
-    userId: Number,
-    eventId: Number,
-    quantity: Number
-}
-response: {
-    status: String,
-    message: String
-}
-
-// GET /cart - Obtener todos los eventos en el carrito de compras
+// GET /users/{userId}/cart - Obtener todos los eventos en el carrito de compras
 headers:
 Authorization: Bearer <token>
 response: {
@@ -164,7 +244,21 @@ response: {
     }]
 }
 
-// DELETE /cart/{cartId} - Eliminar un evento del carrito de compras
+// POST /users/{userId}/cart - Añadir un evento al carrito de compras
+headers:
+Authorization: Bearer <token>
+request:
+payload: {
+    eventId: Number,
+    quantity: Number
+}
+response: {
+    status: String,
+    message: String
+}
+
+
+// DELETE /users/{userId}/cart/{cartId} - Eliminar un evento del carrito de compras
 headers:
 Authorization: Bearer <token>
 response: {
