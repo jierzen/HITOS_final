@@ -1,11 +1,12 @@
-import React from 'react';
-import Navbar from '../utils/MyNavbar';
+import React from "react";
+import MyNavbar from "../utils/MyNavbar";
+import MyFooter from "../utils/MyFooter";
 
 function Home() {
   return (
     <div>
-      <h1>Musicalizate</h1>
-      <Navbar/>
+      <MyNavbar />
+      <MyFooter />
     </div>
   );
 }
