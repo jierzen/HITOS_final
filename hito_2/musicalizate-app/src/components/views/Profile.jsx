@@ -1,10 +1,12 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom';
 
 export const Profile = () => {
   return (
     <>
-        <h1>Mi Perfil</h1>
-        <h3>Ver mi perfil, editar detalles y boton eliminar mi cuenta</h3>
+      
+			<div>Dashboard Private</div>
+			<Outlet />
     </>
   )
 }

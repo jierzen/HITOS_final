@@ -1,9 +1,26 @@
-import React from 'react'
+import React from 'react';
+import BackButton from './backButton'; // Importar el botón de navegación hacia atrás
 
 export const About = () => {
   return (
-    <h1>Pagina Acerca De</h1>
-  )
-}
+    <div className="container mt-5">
+      <h2>Acerca de Nosotros:</h2>
+      <p>
+        ¡Bienvenidos a Musicalizate! Nuestra misión es unir a los amantes de la música organizando y promoviendo eventos musicales.
+        Tanto si eres un artista que busca mostrar su talento como si eres un fan ansioso por descubrir nueva música, estamos aquí para conectarte con el vibrante mundo de la música.
+      </p>
+      <p>
+        En Musicalizate, creemos en el poder de la música para inspirar, conectar y transformar. Nuestra plataforma ofrece una manera fácil de registrarse para los próximos eventos, explorar nuevos artistas y mantenerse actualizado con las últimas tendencias musicales.
+      </p>
+      <p>
+        Únete a nosotros para celebrar la alegría de la música. ¡Vamos a crear cultura musical con eventos y momentos inolvidables juntos!
+      </p>
+      <p><strong>
+        ¡TE ESPERAMOS!</strong>
+      </p>
+      <BackButton /> {/* Agregar el botón de ir hacia atrás */}
+    </div>
+  );
+};
 
 export default About;
