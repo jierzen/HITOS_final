@@ -23,7 +23,7 @@ function Home() {
           </Col>
           <Col xs={12} md={6} className="text-md-left">
             <div className="p-4">
-              <h1>Bienvenido a Musicalizate</h1>
+              <h1>Bienvenid@ a Musicalizate</h1>
               <p>
                 Aquí encontrarás las mejores bandas y eventos musicales del
                 país. Descubre nuevas experiencias y siente el poder del rock.

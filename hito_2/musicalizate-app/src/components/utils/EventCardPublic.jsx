@@ -8,6 +8,7 @@ const EventCardPublic = ({
   location,
   ticket_price,
   img_url,
+  tickets_available,
 }) => {
   return (
     <Card style={{ width: "18rem" }} className="text-center">
@@ -28,6 +29,9 @@ const EventCardPublic = ({
           </Card.Text>
           <Card.Text>
             <strong>Precio del ticket:</strong> {ticket_price}
+          </Card.Text>
+          <Card.Text>
+            <strong>Tickets disponibles:</strong> {tickets_available}
           </Card.Text>
         </div>
         <Button variant="dark" className="mt-3">

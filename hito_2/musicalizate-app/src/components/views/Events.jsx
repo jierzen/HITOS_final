@@ -18,6 +18,7 @@ const Events = () => {
                 location="Auditorio Nacional"
                 ticket_price="$50.000"
                 img_url="https://via.placeholder.com/150"
+                tickets_available="2"
               />
             </div>
             <div className="col mb-4">
@@ -28,6 +29,7 @@ const Events = () => {
                 location="Teatro Municipal"
                 ticket_price="$30.000"
                 img_url="https://via.placeholder.com/150"
+                tickets_available="19"
               />
             </div>
             <div className="col mb-4">
@@ -38,6 +40,7 @@ const Events = () => {
                 location="Sala de Conciertos XYZ"
                 ticket_price="$40.000"
                 img_url="https://via.placeholder.com/150"
+                tickets_available="24"
               />
             </div>
             <div className="col mb-4">
@@ -48,6 +51,7 @@ const Events = () => {
                 location="Estadio Central"
                 ticket_price="$60.000"
                 img_url="https://via.placeholder.com/150"
+                tickets_available="22"
               />
             </div>
           </div>
