@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button, Form } from "react-bootstrap";
 import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
+import { useNavigate } from "react-router-dom";
+import { MarketplaceContext } from '../utils/MarketplaceProvider'; // Asegúrate de importar el contexto
 
-const Login = () => {
+const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { logIn } = useContext(MarketplaceContext); // Obtén la función logIn del contexto
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
-  };
 
+    // Aquí puedes agregar la lógica de validación y autenticación
+    console.log("Email:", email, "Password:", password);
+
+    // Simula un inicio de sesión exitoso llamando a la función logIn del contexto
+    logIn();
+
+    // Redirige al perfil
+    navigate("/profile");
+  };
   return (
     <div>
       <MyNavbar />
@@ -48,4 +59,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LogIn;

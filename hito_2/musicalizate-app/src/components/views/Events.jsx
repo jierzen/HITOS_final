@@ -1,12 +1,13 @@
 import React from "react";
-import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import EventCardPublic from "../utils/EventCardPublic";
 
 const Events = () => {
+  
   return (
+    
     <div className="min-vh-100 d-flex flex-column">
-      <MyNavbar />
+      <h1 className="container mt-5">EVENTOS DISPONIBLES</h1>
       <div className="flex-grow-1 d-flex justify-content-center">
         <div className="container my-4">
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
