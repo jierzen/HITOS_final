@@ -10,6 +10,7 @@ export const MarketplaceProvider = ({ children }) => {
     picture: '',
     role: '',
     events: [],
+    favs: [],
     cart: []
   });
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ export const MarketplaceProvider = ({ children }) => {
         picture: '',
         role: '',
         events: [],
+        favs: [],
         cart: []
       });
       }, 300);
@@ -49,7 +51,7 @@ export const MarketplaceProvider = ({ children }) => {
     setUserSession(prevSession => ({
       ...prevSession,
       events: prevSession.events.map(event =>
-        event.event_id === updatedEvent.event_id ? updatedEvent : event
+        event.eventId === updatedEvent.eventId ? updatedEvent : event
       )
     }));
   };
@@ -57,7 +59,7 @@ export const MarketplaceProvider = ({ children }) => {
   const deleteEvent = (eventId) => {
     setUserSession(prevSession => ({
       ...prevSession,
-      events: prevSession.events.filter(event => event.event_id !== eventId)
+      events: prevSession.events.filter(event => event.eventId !== eventId)
     }));
   };
 
@@ -69,15 +71,41 @@ export const MarketplaceProvider = ({ children }) => {
       picture: 'https://static.vecteezy.com/system/resources/thumbnails/007/407/996/small/user-icon-person-icon-client-symbol-login-head-sign-icon-design-vector.jpg',
       role: 'admin',
       events: [],
+      favs: [],
       cart: []
     });
+  };
+
+  const addFav = (event) => {
+    setUserSession(prevSession => {
+      const itemExists = prevSession.favs.find(item => item.eventId === event.eventId);
+      if (itemExists) {
+        return {
+          ...prevSession,
+          favs: prevSession.favs.filter(item => item.eventId !== event.eventId)
+        };
+      } else {
+        
+        return {
+          ...prevSession,
+          favs: [...prevSession.favs, { ...event }]
+        };
+      }
+    });
+  };
+
+  const removeFromFavs = (eventId) => {
+    setUserSession(prevSession => ({
+      ...prevSession,
+      favs: prevSession.favs.filter(item => item.eventId !== eventId)
+    }));
   };
 
   const updateCart = (eventId, quantity) => {
     setUserSession(prevSession => ({
       ...prevSession,
       cart: prevSession.cart.map(item =>
-        item.event_id === eventId ? { ...item, quantity } : item
+        item.eventId === eventId ? { ...item, quantity } : item
       )
     }));
   };
@@ -85,35 +113,30 @@ export const MarketplaceProvider = ({ children }) => {
   const removeFromCart = (eventId) => {
     setUserSession(prevSession => ({
       ...prevSession,
-      cart: prevSession.cart.filter(item => item.event_id !== eventId)
+      cart: prevSession.cart.filter(item => item.eventId !== eventId)
     }));
   };
 
   const addToCart = (event) => {
-    const numericPrice = typeof event.ticket_price === 'string' 
-      ? parseInt(event.ticket_price.replace(/\D/g, ''), 10) 
-      : event.ticket_price;
+    console.log('Evento con precio = ',event)
+    const numericPrice = typeof event.ticketPrice === 'string' ? parseInt(event.ticketPrice.replace(/\D/g, ''), 10) : event.ticketPrice;
     
     setUserSession(prevSession => {
-      const itemExists = prevSession.cart.find(item => item.event_id === event.event_id);
+      const itemExists = prevSession.cart.find(item => item.eventId === event.eventId);
       if (itemExists) {
         return {
-          ...prevSession,
-          cart: prevSession.cart.map(item =>
-            item.event_id === event.event_id ? { ...item, quantity: item.quantity + 1 } : item
-          )
-        };
+          ...prevSession, cart: prevSession.cart.map(item =>
+                item.eventId === event.eventId ? { ...item, quantity: item.quantity + 1 } : item )};
       } else {
         return {
           ...prevSession,
-          cart: [...prevSession.cart, { ...event, ticket_price: numericPrice, quantity: 1 }]
-        };
+          cart: [...prevSession.cart, { ...event, ticketPrice: numericPrice, quantity: 1 }]};
       }
     });
   };
 
   return (
-    <MarketplaceContext.Provider value={{ userSession, logIn, handleLogOut, updateProfile, addEvent, updateEvent, deleteEvent, updateCart, removeFromCart, addToCart }}>
+    <MarketplaceContext.Provider value={{ userSession, logIn, addFav, removeFromFavs, handleLogOut, updateProfile, addEvent, updateEvent, deleteEvent, updateCart, removeFromCart, addToCart }}>
       {children}
     </MarketplaceContext.Provider>
   );
