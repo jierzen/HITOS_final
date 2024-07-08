@@ -2,17 +2,16 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-const Footer = () => {
+const MyFooter = () => {
   return (
     <footer
       style={{
         backgroundColor: "white",
         color: "#333",
         padding: "20px 0",
-        position: "fixed",
-        bottom: "0",
         width: "100%",
         borderTop: "1px solid #ccc",
+        position: "relative",
       }}
     >
       <Container>
@@ -45,4 +44,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default MyFooter;

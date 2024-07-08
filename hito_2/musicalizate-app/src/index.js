@@ -8,10 +8,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <MarketplaceProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <MarketplaceProvider>
         <App />
-      </BrowserRouter>
-    </MarketplaceProvider>
+      </MarketplaceProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

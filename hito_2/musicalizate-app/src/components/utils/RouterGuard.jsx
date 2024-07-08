@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
-export const RuoterGuard = ({
+export const RouterGuard = ({
 	isAllowed,
 	redirectPath = '/login',
 	children,

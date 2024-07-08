@@ -14,42 +14,35 @@ import TicketDetail from './components/views/TicketDetail';
 import Favorites from './components/views/Favorites';
 import Cart from './components/views/Cart';
 import { MarketplaceContext } from './components/utils/MarketplaceProvider';
-import { RuoterGuard } from './components/utils/RuoterGuard';
+import { RouterGuard } from './components/utils/RouterGuard';
 import { useContext } from 'react';
 
 function App() {
-    const { userSession, isLoggedIn } = useContext(MarketplaceContext);
-  return (
-    <>
-      <Routes>
-        {/* Seccion Publica */}
-        <Route path="/" element={<Home />} />
-        <Route path="/events" element={<Events />} />{/*Catalogo de Eventos*/}
-        <Route path="/events/:eventId" element={<EventDetail />} />{/*Detalle de un Evento*/}
-        <Route path="/signup" element={<SignUp/>} />{/*Registrarse*/}
-        <Route path="/login" element={<LogIn/>} />{/*Iniciar Sesion*/}
-        <Route path="/about" element={<About />} />{/*Acerca de*/}
-        <Route path="/contact" element={<Contact />} />{/*Contacto*/}
+    const { userSession } = useContext(MarketplaceContext);
 
-        {/* Seccion Privada */}
-        <Route
-					element={
-          <RuoterGuard	isAllowed={userSession.role.includes('admin') && isLoggedIn}/>
-          }>
-					<Route path="Profile" element={<Profile />}
-					>
-          </Route>
-          <Route element={<Profile />}
-						/>
-        <Route path="/profile/events" element={<ManageEvents />} />{/*Ver mis eventos, publicar, editar o eliminar un evento*/}
-        <Route path="/profile/tickets" element={<Tickets />} />{/*Ver mis tickets comprados*/}
-        <Route path="/profile/tickets/:ticketId" element={<TicketDetail />} />{/*Ver el detalle de un ticket comprado*/}
-        <Route path="/profile/favorites" element={<Favorites />} />{/*Ver mis favoritos y da posibilidad de eliminar un evento de favoritos*/}
-        <Route path="/profile/cart" element={<Cart />} />{/*Ver mi carrito y da posibilidad de eliminar un evento del carrito*/}
-        </Route>
-      </Routes>
-    </>
-  );
-};
+    return (
+        <>
+            <Routes>
+                {/* Seccion Publica */}
+                <Route path="/" element={<Home />} />
+                <Route path="/events" element={<Events />} />{/*Catalogo de Eventos*/}
+                <Route path="/events/:eventId" element={<EventDetail />} />{/*Detalle de un Evento*/}
+                <Route path="/signup" element={<SignUp/>} />{/*Registrarse*/}
+                <Route path="/login" element={<LogIn/>} />{/*Iniciar Sesion*/}
+                <Route path="/about" element={<About />} />{/*Acerca de*/}
+                <Route path="/contact" element={<Contact />} />{/*Contacto*/}
+                <Route path="/cart" element={<Cart />} />{/*Ver mi carrito y da posibilidad de eliminar un evento del carrito*/}
+
+                {/* Seccion Privada */}
+                <Route path="/profile" element={<RouterGuard isAllowed={userSession.role.includes('admin') && userSession.isLoggedIn}><Profile /></RouterGuard>} />
+                <Route path="/profile/events" element={<RouterGuard isAllowed={userSession.isLoggedIn}><ManageEvents /></RouterGuard>} />{/*Ver mis eventos, publicar, editar o eliminar un evento*/}
+                <Route path="/profile/tickets" element={<RouterGuard isAllowed={userSession.isLoggedIn}><Tickets /></RouterGuard>} />{/*Ver mis tickets comprados*/}
+                <Route path="/profile/tickets/:ticketId" element={<RouterGuard isAllowed={userSession.isLoggedIn}><TicketDetail /></RouterGuard>} />{/*Ver el detalle de un ticket comprado*/}
+                <Route path="/profile/favorites" element={<RouterGuard isAllowed={userSession.isLoggedIn}><Favorites /></RouterGuard>} />{/*Ver mis favoritos y da posibilidad de eliminar un evento de favoritos*/}
+                
+            </Routes>
+        </>
+    );
+}
 
 export default App;

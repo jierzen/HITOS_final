@@ -20,6 +20,7 @@ CREATE TABLE event (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     date TIMESTAMP NOT NULL,
+    picture TEXT,
     location VARCHAR(255) NOT NULL,
     ticket_price NUMERIC(10, 2) NOT NULL,
     tickets_available INT NOT NULL,

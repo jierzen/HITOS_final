@@ -1,33 +1,43 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import { useNavigate } from "react-router-dom";
-import { MarketplaceContext } from '../utils/MarketplaceProvider'; // Asegúrate de importar el contexto
+import { MarketplaceContext } from '../utils/MarketplaceProvider';
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { logIn } = useContext(MarketplaceContext); // Obtén la función logIn del contexto
+  const { logIn, userSession } = useContext(MarketplaceContext);
+
+  useEffect(() => {
+    if (userSession.isLoggedIn) {
+      console.log("Redirigiendo al perfil...");
+      navigate("/profile", { replace: true });
+    }
+  }, [userSession.isLoggedIn, navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Aquí puedes agregar la lógica de validación y autenticación
-    console.log("Email:", email, "Password:", password);
+    // Simple validación de ejemplo
+    if (!email || !password) {
+      alert("Por favor, ingresa tu correo y contraseña.");
+      return;
+    }
 
-    // Simula un inicio de sesión exitoso llamando a la función logIn del contexto
-    logIn();
+    console.log("Intentando iniciar sesión con Email:", email, "y Contraseña:", password);
 
-    // Redirige al perfil
-    navigate("/profile");
+    // Llama a logIn con email y contraseña
+    logIn(email, password);
   };
+
   return (
     <div>
       <MyNavbar />
       <div className="container mt-5">
-        <h2>Ingresa tu perfil</h2>
+        <h2>Ingresa a tu perfil</h2>
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="formEmail">
             <Form.Label>Correo</Form.Label>
@@ -36,6 +46,7 @@ const LogIn = () => {
               placeholder="Ingresar correo registrado"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </Form.Group>
 
@@ -46,6 +57,7 @@ const LogIn = () => {
               placeholder="Mínimo 8 caracteres"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </Form.Group>
 
