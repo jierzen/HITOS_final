@@ -14,9 +14,15 @@ const Contact = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <MyNavbar />
-      <div className="container mt-5">
+      <div className="container mt-5" style={{ flex: 1 }}>
         <h2>Solicitud de contacto</h2>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formName">

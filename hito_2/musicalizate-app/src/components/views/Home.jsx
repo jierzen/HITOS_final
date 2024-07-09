@@ -6,12 +6,15 @@ import homeImg from "../../assets/home-img.png";
 
 function Home() {
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <MyNavbar />
-      <Container
-        className="d-flex flex-column justify-content-center align-items-center"
-        style={{ height: "calc(100vh - 56px - 56px)" }}
-      >
+      <Container className="d-flex flex-column justify-content-center align-items-center flex-grow-1">
         <Row className="align-items-center w-100">
           <Col xs={12} md={5} className="text-center mb-4 mb-md-0">
             <img

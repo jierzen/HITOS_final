@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import { useNavigate } from "react-router-dom";
-import { MarketplaceContext } from '../utils/MarketplaceProvider';
+import { MarketplaceContext } from "../utils/MarketplaceProvider";
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
@@ -27,16 +27,27 @@ const LogIn = () => {
       return;
     }
 
-    console.log("Intentando iniciar sesión con Email:", email, "y Contraseña:", password);
+    console.log(
+      "Intentando iniciar sesión con Email:",
+      email,
+      "y Contraseña:",
+      password
+    );
 
     // Llama a logIn con email y contraseña
     logIn(email, password);
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <MyNavbar />
-      <div className="container mt-5">
+      <div className="container mt-5" style={{ flex: 1 }}>
         <h2>Ingresa a tu perfil</h2>
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="formEmail">
@@ -50,7 +61,7 @@ const LogIn = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formPassword">
+          <Form.Group controlId="formPassword" className="mt-3">
             <Form.Label>Contraseña</Form.Label>
             <Form.Control
               type="password"

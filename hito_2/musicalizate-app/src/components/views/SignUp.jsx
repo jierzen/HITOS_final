@@ -24,10 +24,15 @@ export const SignUp = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <MyNavbar />
-
-      <div className="container mt-5">
+      <div className="container mt-5" style={{ flex: 1 }}>
         <h2>Registrar nuevo usuario</h2>
         <Form onSubmit={handleRegister}>
           <Form.Group controlId="formName">

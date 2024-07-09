@@ -5,9 +5,15 @@ import MyFooter from "../utils/MyFooter";
 
 export const About = () => {
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <MyNavbar />
-      <div className="container mt-5">
+      <div className="container mt-5" style={{ flex: 1 }}>
         <h2>Acerca de Nosotros:</h2>
         <p>
           ¡Bienvenidos a Musicalizate! Nuestra misión es unir a los amantes de
