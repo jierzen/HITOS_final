@@ -26,7 +26,7 @@ const EventCardPublic = ({
         {userSession.isLoggedIn && (
           <div className="position-absolute top-0 end-0 p-2">
             {isFavorite ? (
-              <HeartFill size={30} color="red" onClick={onToggleFavorite} style={{ cursor: 'pointer' }} />
+              <HeartFill size={30} color="red" onClick={onToggleFavorite} style={{ cursor: 'pointer', zIndex:99 }} />
             ) : (
               <Heart size={30} onClick={onToggleFavorite} style={{ cursor: 'pointer' }} />
             )}
