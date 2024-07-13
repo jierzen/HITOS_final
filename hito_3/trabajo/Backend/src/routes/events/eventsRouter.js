@@ -4,7 +4,6 @@ const { get_events_controller, add_event_controller } = require('../../controlle
 
 
 router.get('/get-all', get_events_controller)
-
 router.post('/add', add_event_controller )
 
 

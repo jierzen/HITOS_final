@@ -1,7 +1,7 @@
-const { param, body, validationResult } = require('express-validator')
+const { header, param, body, validationResult } = require('express-validator')
 
 const updateValidator = [
-    param('user_id').notEmpty().withMessage('Debes pasar un ID').isInt().withMessage('Debe ser un entero'),
+    param('id').notEmpty().withMessage('Debes pasar un ID').isInt().withMessage('Debe ser un entero'),
     (req, res, next) => {
 
         const errors = validationResult(req).mapped()
@@ -15,29 +15,13 @@ const updateValidator = [
     }
 ]
 
-/**
- * nombre
- * apellidos
- * telefono
- * email 
- * imagen
- */
 
 const addValidator = [
+    body('email').notEmpty().withMessage('Agrega Tu email').isEmail().withMessage('Formato Incorrecto'),
+    body('password').notEmpty().withMessage('Agrega el Nombre de usuario'),
+    body('username').notEmpty().withMessage('Agrega el Role').isIn(['admin', 'guest', 'customer']).withMessage('Debe ser un rol correcto'),
+    body('profile_picture').notEmpty().withMessage('Agrega Tu país'),
 
-    body('picture')
-        .notEmpty().withMessage('Debes ingresar un Foto')
-        .isURL().withMessage('Debe ser un URL'),
-
-    // body('role')
-    //     .notEmpty().withMessage('Agrega el Role')
-    //     .isIn(['admin', 'guest', 'customer'])
-    //     .withMessage('Debe ser un rol correcto')
-    // ,
-
-    body('usermane')
-        .notEmpty().withMessage('Agrega el Nombre de usuario'),
-        body('email').notEmpty().withMessage('Agrega Tu email').isEmail().withMessage('Formato Incorrecto'),
 
     (req, res, next) => {
 
