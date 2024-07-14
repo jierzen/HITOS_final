@@ -33,11 +33,11 @@ const EventCardPublic = ({
           <div
             className="position-absolute bottom-0 end-0"
             style={{
-              backgroundColor: "white", // Fondo blanco
-              borderRadius: "50%", // Forma circular
-              padding: "10px", // Espacio alrededor del ícono
-              border: "1px solid black", // Borde negro
-              margin: "10px", // Espacio desde el borde del contenedor
+              backgroundColor: "white",
+              borderRadius: "50%",
+              padding: "10px",
+              border: "1px solid black",
+              margin: "10px",
             }}
           >
             {isFavorite ? (
