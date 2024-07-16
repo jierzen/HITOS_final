@@ -31,6 +31,10 @@ CREATE TABLE eventos (
 
 SELECT * FROM users;
 
+select * from eventos;
+
+select * from usuarios;
+
 -- Entradas
 CREATE TABLE ticket (
     ticket_id SERIAL PRIMARY KEY,

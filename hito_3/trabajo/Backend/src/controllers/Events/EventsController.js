@@ -2,8 +2,8 @@ const { eventsCollection } = require('../../database/models/eventsModel');
 
 const add_event_controller = async (req, res, next) => {
   try {
-    const { title, description, date_event, location, ticket_price, tickets_avaliable } = req.body;
-    const response = await eventsCollection.addEvent(title, description, date_event, location, ticket_price, tickets_avaliable);
+    const { title, description, date, location, ticket_price, tickets_avaliable } = req.body;
+    const response = await eventsCollection.addEvent(title, description, date, location, ticket_price, tickets_avaliable);
     res.send(response);
   } catch (error) {
     next(error);

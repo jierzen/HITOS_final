@@ -1,29 +1,41 @@
-GET http://localhost:3000/api/profile/events/get-all
+POST http://127.0.0.1:3000/api/profile/registrarse
 Content-Type: application/json
 
-###
-
-get http://127.0.0.1:3000/api/profile/get-all
-Content-Type: application/json
-
-###
-
-POST http://127.0.0.1:3000/api/profile/create
-Content-Type: application/json
-{ 
-"email": "vegeta@gmail.com", 
-"password": 1234313125,
-"username": "principe sayayin",
-"profile_picture": "https://i.pinimg.com/736x/69/57/08/6957089f6bbcb0edf4108aac0febdc3f.jpg", 
-"is_admin": true 
+{
+    "email": "Juan.pinto37@gmail.com", 
+    "password": "12345", 
+    "profile_picture": "FullStackDeveloper",
+    "username": "admin",
+    "is_admin": true
 }
+###
+GET http://127.0.0.1:3000/api/profile/events/get-all
+    Content-Type: application/json
 
 ###
 
-//sin URL de IMAGEN // 
-POST http://127.0.0.1:3000/api/profile/add 
+POST http://127.0.0.1:3000/api/profile/registrarse
 Content-Type: application/json
 
-
+{
+    "email": "Juan.pinto66@gmail.com", 
+    "password": "12345", 
+    "profile_picture": "FullStackDeveloper",
+    "username": "admin",
+    "is_admin": true
+}
 ###
+POST http://127.0.0.1:3000/api/profile/login
+Content-Type: application/json
 
+{
+    "email": "Juan.pinto46@gmail.com", 
+    "password": "12345", 
+    "profile_picture": "FullStackDeveloper",
+    "username": "admin",
+    "is_admin": true
+}
+###
+GET http://127.0.0.1:3000/api/profile/perfil
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Ikp1YW4ucGludG80NkBnbWFpbC5jb20iLCJpYXQiOjE3MjExMDczMzcsImV4cCI6MTcyMTExMDkzN30.aO_sKn2bnUiWxSZ7JG7FugvDEEHRLK5whTHHvVr-B8U
