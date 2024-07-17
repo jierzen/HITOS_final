@@ -13,11 +13,25 @@ const EventCardPublic = ({
   tickets_available,
   event_id,
   isFavorite,
-  onAddToCart,
   onToggleFavorite,
   onViewDetails,
 }) => {
-  const { userSession } = useContext(MarketplaceContext);
+  const { userSession, addToCart } = useContext(MarketplaceContext);
+
+  //
+
+  const handleAddToCart = () => {
+    addToCart({
+      title,
+      description,
+      date_event,
+      location,
+      ticket_price,
+      img_url,
+      tickets_available,
+      event_id,
+    });
+  };
 
   const imageStyles = {
     width: "100%",
@@ -77,7 +91,7 @@ const EventCardPublic = ({
         <Button variant="primary" onClick={onViewDetails}>
           Detalles
         </Button>
-        <Button variant="success" onClick={onAddToCart}>
+        <Button variant="success" onClick={handleAddToCart}>
           Agregar al Carrito
         </Button>
       </Card.Footer>

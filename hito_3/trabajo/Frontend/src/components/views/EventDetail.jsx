@@ -32,8 +32,20 @@ const EventDetail = () => {
     addFav(event);
   };
 
+  //Uso esta función porque, por algún motivo el objeto que mandaba EventDetail a Cart tenía keys distintas
   const handleAddToCart = () => {
-    addToCart({ ...event, quantity });
+    const eventToCart = {
+      eventId: event.eventId,
+      title: event.title,
+      description: event.description,
+      date_event: event.dateEvent,
+      location: event.location,
+      ticket_price: event.ticketPrice,
+      quantity,
+      img_url: event.imgUrl,
+    };
+    console.log("Adding to cart:", eventToCart);
+    addToCart(eventToCart);
   };
 
   const handleQuantityChange = (e) => {

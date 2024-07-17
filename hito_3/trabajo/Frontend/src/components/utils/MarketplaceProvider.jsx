@@ -1,142 +1,189 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 export const MarketplaceContext = createContext();
 
 export const MarketplaceProvider = ({ children }) => {
   const [userSession, setUserSession] = useState({
     isLoggedIn: false,
-    username: '',
-    email: '',
-    picture: '',
-    role: '',
+    username: "",
+    email: "",
+    picture: "",
+    role: "",
     events: [],
     favs: [],
-    cart: []
+    cart: [],
+    tickets: [],
   });
   const navigate = useNavigate();
   const handleLogOut = () => {
-    console.log('Cerrar sesión');
+    console.log("Cerrar sesión");
 
     setTimeout(() => {
-      
       setUserSession({
         isLoggedIn: false,
-        username: '',
-        email: '',
-        picture: '',
-        role: '',
+        username: "",
+        email: "",
+        picture: "",
+        role: "",
         events: [],
         favs: [],
-        cart: []
+        cart: [],
+        tickets: [],
       });
-      }, 300);
-      navigate("/")
+    }, 300);
+    navigate("/");
   };
 
   const updateProfile = (data) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      ...data
+      ...data,
     }));
   };
 
   const addEvent = (event) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      events: [...prevSession.events, event]
+      events: [...prevSession.events, event],
     }));
   };
 
   const updateEvent = (updatedEvent) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      events: prevSession.events.map(event =>
+      events: prevSession.events.map((event) =>
         event.eventId === updatedEvent.eventId ? updatedEvent : event
-      )
+      ),
     }));
   };
 
   const deleteEvent = (eventId) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      events: prevSession.events.filter(event => event.eventId !== eventId)
+      events: prevSession.events.filter((event) => event.eventId !== eventId),
     }));
   };
 
   const logIn = (email, password) => {
     setUserSession({
       isLoggedIn: true,
-      username: 'Fulano Detal',
+      username: "Fulano Detal",
       email: email,
-      picture: 'https://static.vecteezy.com/system/resources/thumbnails/007/407/996/small/user-icon-person-icon-client-symbol-login-head-sign-icon-design-vector.jpg',
-      role: 'admin',
+      picture:
+        "https://static.vecteezy.com/system/resources/thumbnails/007/407/996/small/user-icon-person-icon-client-symbol-login-head-sign-icon-design-vector.jpg",
+      role: "admin",
       events: [],
       favs: [],
-      cart: []
+      cart: [],
+      tickets: [],
     });
   };
 
   const addFav = (event) => {
-    setUserSession(prevSession => {
-      const itemExists = prevSession.favs.find(item => item.eventId === event.eventId);
+    setUserSession((prevSession) => {
+      const itemExists = prevSession.favs.find(
+        (item) => item.eventId === event.eventId
+      );
       if (itemExists) {
         return {
           ...prevSession,
-          favs: prevSession.favs.filter(item => item.eventId !== event.eventId)
+          favs: prevSession.favs.filter(
+            (item) => item.eventId !== event.eventId
+          ),
         };
       } else {
-        
         return {
           ...prevSession,
-          favs: [...prevSession.favs, { ...event }]
+          favs: [...prevSession.favs, { ...event }],
         };
       }
     });
   };
 
   const removeFromFavs = (eventId) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      favs: prevSession.favs.filter(item => item.eventId !== eventId)
+      favs: prevSession.favs.filter((item) => item.eventId !== eventId),
     }));
   };
 
   const updateCart = (eventId, quantity) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      cart: prevSession.cart.map(item =>
+      cart: prevSession.cart.map((item) =>
         item.eventId === eventId ? { ...item, quantity } : item
-      )
+      ),
     }));
   };
 
   const removeFromCart = (eventId) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      cart: prevSession.cart.filter(item => item.eventId !== eventId)
+      cart: prevSession.cart.filter((item) => item.eventId !== eventId),
     }));
   };
 
+  //Función para agregar al carrito, que se llama desde EventCardPublic
   const addToCart = (event) => {
-    console.log('Evento con precio = ',event)
-    const numericPrice = typeof event.ticketPrice === 'string' ? parseInt(event.ticketPrice.replace(/\D/g, ''), 10) : event.ticketPrice;
-    
-    setUserSession(prevSession => {
-      const itemExists = prevSession.cart.find(item => item.eventId === event.eventId);
+    console.log("Evento con precio = ", event);
+    const numericPrice =
+      typeof event.ticket_price === "string"
+        ? parseInt(event.ticket_price.replace(/\D/g, ""), 10)
+        : event.ticket_price;
+
+    setUserSession((prevSession) => {
+      const itemExists = prevSession.cart.find(
+        (item) => item.event_id === event.event_id
+      );
       if (itemExists) {
         return {
-          ...prevSession, cart: prevSession.cart.map(item =>
-                item.eventId === event.eventId ? { ...item, quantity: item.quantity + 1 } : item )};
+          ...prevSession,
+          cart: prevSession.cart.map((item) =>
+            item.event_id === event.event_id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        };
       } else {
         return {
           ...prevSession,
-          cart: [...prevSession.cart, { ...event, ticketPrice: numericPrice, quantity: 1 }]};
+          cart: [
+            ...prevSession.cart,
+            { ...event, ticket_price: numericPrice, quantity: 1 },
+          ],
+        };
       }
     });
   };
 
+  // Función para comprar tickets desde el carrito
+
+  const buyTickets = (cartItems) => {
+    setUserSession((prevSession) => ({
+      ...prevSession,
+      tickets: [...prevSession.tickets, ...cartItems],
+      cart: [],
+    }));
+  };
+
   return (
-    <MarketplaceContext.Provider value={{ userSession, logIn, addFav, removeFromFavs, handleLogOut, updateProfile, addEvent, updateEvent, deleteEvent, updateCart, removeFromCart, addToCart }}>
+    <MarketplaceContext.Provider
+      value={{
+        userSession,
+        logIn,
+        addFav,
+        removeFromFavs,
+        handleLogOut,
+        updateProfile,
+        addEvent,
+        updateEvent,
+        deleteEvent,
+        updateCart,
+        removeFromCart,
+        addToCart,
+        buyTickets,
+      }}
+    >
       {children}
     </MarketplaceContext.Provider>
   );
