@@ -1,26 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
+import axios from "axios";
+import { ENDPOINT } from "../../config/constans";
 
-export const SignUp = () => {
+const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [age, setAge] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const navigate = useNavigate();
+  const [isRegistered, setIsRegistered] = useState(false);
+
+  useEffect(() => {
+    if (isRegistered) {
+      navigate("/login");
+    }
+  }, [isRegistered, navigate]);
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log(
-      "Name:",
-      name,
-      "Email:",
-      email,
-      "Password:",
-      password,
-      "Age:",
-      age
-    );
+    
+    const userData = {
+      username: name,
+      email: email,
+      password: password,
+      profile_picture: photoUrl,
+      is_admin: true,
+    }
+    console.log(userData);
+
+    axios.post(ENDPOINT.users, userData)
+      .then(({ data }) => {
+        window.alert("Usuario registrado con éxito 😀.");
+        console.log("Usuario creado:", data);
+        setIsRegistered(true);
+      })
+      .catch(({ response: { data } }) => {
+        console.error(data);
+        window.alert(`${data.message} 🙁.`);
+      });
   };
 
   return (
@@ -65,13 +86,13 @@ export const SignUp = () => {
             />
           </Form.Group>
 
-          <Form.Group controlId="formAge" className="mt-3">
-            <Form.Label>Edad</Form.Label>
+          <Form.Group controlId="formPhoto" className="mt-3">
+            <Form.Label>Foto (URL)</Form.Label>
             <Form.Control
-              type="number"
-              placeholder="Ingrese su edad"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
+              type="text"
+              placeholder="Ingrese la URL de su foto"
+              value={photoUrl}
+              onChange={(e) => setPhotoUrl(e.target.value)}
             />
           </Form.Group>
 

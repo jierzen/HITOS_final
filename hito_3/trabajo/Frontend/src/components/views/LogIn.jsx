@@ -4,8 +4,12 @@ import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import { useNavigate } from "react-router-dom";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
+import axios from "axios";
+import { ENDPOINT } from "../../config/constans";
 
-const LogIn = () => {
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -13,7 +17,6 @@ const LogIn = () => {
 
   useEffect(() => {
     if (userSession.isLoggedIn) {
-      console.log("Redirigiendo al perfil...");
       navigate("/profile", { replace: true });
     }
   }, [userSession.isLoggedIn, navigate]);
@@ -21,31 +24,28 @@ const LogIn = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Simple validación de ejemplo
-    if (!email || !password) {
-      alert("Por favor, ingresa tu correo y contraseña.");
-      return;
+    if (!emailRegex.test(email)) {
+      return window.alert("El formato del email no es correcto!");
     }
 
-    console.log(
-      "Intentando iniciar sesión con Email:",
-      email,
-      "y Contraseña:",
-      password
-    );
+    if (!email || !password) {
+      return window.alert("Por favor, ingresa tu correo y contraseña.");
+    }
 
-    // Llama a logIn con email y contraseña
-    logIn(email, password);
+    axios.post(ENDPOINT.login, { email, password })
+      .then(({ data }) => {
+        window.sessionStorage.setItem("token", data.token);
+        window.alert('Usuario identificado con éxito 😀.')
+        logIn(email, password);
+      })
+      .catch(({ response: { data } }) => {
+        console.error(data);
+        window.alert(`${data.message} 🙁.`);
+      });
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <MyNavbar />
       <div className="container mt-5" style={{ flex: 1 }}>
         <h2>Ingresa a tu perfil</h2>
@@ -60,7 +60,6 @@ const LogIn = () => {
               required
             />
           </Form.Group>
-
           <Form.Group controlId="formPassword" className="mt-3">
             <Form.Label>Contraseña</Form.Label>
             <Form.Control
@@ -71,10 +70,7 @@ const LogIn = () => {
               required
             />
           </Form.Group>
-
-          <Button variant="dark" type="submit" className="mt-3">
-            Ingresar
-          </Button>
+          <Button variant="dark" type="submit" className="mt-3">Ingresar</Button>
         </Form>
       </div>
       <MyFooter />
@@ -82,4 +78,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default Login;

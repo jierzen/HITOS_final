@@ -15,8 +15,9 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log("Cerrar sesión");
-    navigate(-1);
+    setTimeout(() => {
+      navigate("/");
+    }, 300);
   };
 
   const handleChange = (e) => {
@@ -37,13 +38,7 @@ const Profile = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <MyNavbar />
       <div className="container mt-5" style={{ flex: 1 }}>
         <h1>Perfil de Usuario</h1>
@@ -62,108 +57,61 @@ const Profile = () => {
                 {isEditing ? (
                   <div className="container">
                     <div className="row justify-content-center">
-                      <div className="col-md-6">
-                        <div className="mb-3">
-                          <label className="form-label">Username</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Email</label>
-                          <input
-                            type="email"
-                            className="form-control"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label className="form-label">Picture URL</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="picture"
-                            value={formData.picture}
-                            onChange={handleChange}
-                          />
-                        </div>
-                        <div className="mb-3 d-grid">
-                          <button
-                            className="btn btn-primary"
-                            onClick={handleSave}
-                          >
+                      <div className="col-md-8">
+                        <form>
+                          <div className="form-group">
+                            <label htmlFor="username">Nombre de Usuario</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="username"
+                              name="username"
+                              value={formData.username}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <label htmlFor="email">Correo Electrónico</label>
+                            <input
+                              type="email"
+                              className="form-control"
+                              id="email"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <label htmlFor="picture">Foto de Perfil</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="picture"
+                              name="picture"
+                              value={formData.picture}
+                              onChange={handleChange}
+                            />
+                          </div>
+                          <button type="button" className="btn btn-primary mt-3" onClick={handleSave}>
                             Guardar
                           </button>
-                        </div>
-                        <div className="mb-3 d-grid">
-                          <button
-                            className="btn btn-secondary"
-                            onClick={handleEdit}
-                          >
-                            Cancelar
-                          </button>
-                        </div>
+                        </form>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <>
-                    <p>
-                      <strong>Username:</strong> {userSession.username}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {userSession.email}
-                    </p>
-                    <p>
-                      <strong>Picture:</strong>{" "}
-                      <img
-                        src={userSession.picture}
-                        alt="profile"
-                        className="img-fluid rounded-circle"
-                        style={{
-                          maxWidth: "150px",
-                          maxHeight: "150px",
-                          marginLeft: "30px",
-                        }}
-                      />
-                    </p>
-                    <button
-                      className="btn btn-outline-primary"
-                      onClick={handleEdit}
-                    >
-                      Editar Perfil
-                    </button>
-                  </>
+                  <div>
+                    <h3>{userSession.username}</h3>
+                    <p>{userSession.email}</p>
+                    <button className="btn btn-secondary" onClick={handleEdit}>Editar Perfil</button>
+                    <button className="btn btn-danger ms-3" onClick={handleLogout}>Cerrar Sesión</button>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         </div>
-        <nav className="nav flex-column">
-          <Link to="/profile/events" className="nav-link">
-            Mis Eventos
-          </Link>
-          <Link to="/profile/tickets" className="nav-link">
-            Mis Tickets
-          </Link>
-          <Link to="/profile/favorites" className="nav-link">
-            Mis Favoritos
-          </Link>
-          <Link to="/cart" className="nav-link">
-            Mi Carrito
-          </Link>
-        </nav>
-        <button className="btn btn-outline-danger mt-3" onClick={handleLogout}>
-          Cerrar Sesión
-        </button>
       </div>
-      <Outlet /> {/* Este Outlet renderiza las rutas hijas */}
       <MyFooter />
     </div>
   );

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './components/views/Home';
 import Events from './components/views/Events';
 import EventDetail from './components/views/EventDetail';
@@ -15,11 +15,17 @@ import Favorites from './components/views/Favorites';
 import Cart from './components/views/Cart';
 import { MarketplaceContext } from './components/utils/MarketplaceProvider';
 import { RouterGuard } from './components/utils/RouterGuard';
-import { useContext } from 'react';
 
-function App() {
-    const { userSession } = useContext(MarketplaceContext);
+    function App() {
+        const { userSession, logIn } = useContext(MarketplaceContext);
 
+    useEffect(() => {
+        const token = window.sessionStorage.getItem("token");
+        if (token && !userSession.isLoggedIn) {
+            // Llama a logIn con el token para autenticar al usuario.
+            logIn(token);
+        }
+    }, [userSession.isLoggedIn, logIn]);
     return (
         <>
             <Routes>

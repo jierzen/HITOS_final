@@ -2,7 +2,7 @@ POST http://127.0.0.1:3000/api/profile/registrarse
 Content-Type: application/json
 
 {
-    "email": "Juan.pinto37@gmail.com", 
+    "email": "Juan.pinto30@gmail.com", 
     "password": "12345", 
     "profile_picture": "FullStackDeveloper",
     "username": "admin",
