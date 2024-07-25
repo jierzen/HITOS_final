@@ -36,6 +36,17 @@ Content-Type: application/json
     "is_admin": true
 }
 ###
+POST http://127.0.0.1:3000/api/profile/login
+Content-Type: application/json
+
+{
+    "email": "lisette@gmail.com", 
+    "password": "12345", 
+    "profile_picture": "12345",
+    "username": "admin",
+    "is_admin": true
+}
+###
 GET http://127.0.0.1:3000/api/profile/perfil
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Ikp1YW4ucGludG80NkBnbWFpbC5jb20iLCJpYXQiOjE3MjExMDczMzcsImV4cCI6MTcyMTExMDkzN30.aO_sKn2bnUiWxSZ7JG7FugvDEEHRLK5whTHHvVr-B8U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imxpc2V0dGVAZ21haWwuY29tIiwiaWF0IjoxNzIxODY4NDEzLCJleHAiOjE3MjE4NzIwMTN9.4AMW7pBbCFfvOKVCtNs1TPieQLmpL6IWzdBDdKqutyc

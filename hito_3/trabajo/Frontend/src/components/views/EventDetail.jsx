@@ -1,12 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Button, Form, Card } from "react-bootstrap";
+import { Button, Form, Image } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { Heart, HeartFill } from "react-bootstrap-icons";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
 import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import { simulatedEvents } from "./Events";
-import RegisterEventForm from "../utils/RegisterEventForm";
 
 const EventDetail = () => {
   const { eventId } = useParams();
@@ -32,20 +31,8 @@ const EventDetail = () => {
     addFav(event);
   };
 
-  //Uso esta función porque, por algún motivo el objeto que mandaba EventDetail a Cart tenía keys distintas
   const handleAddToCart = () => {
-    const eventToCart = {
-      eventId: event.eventId,
-      title: event.title,
-      description: event.description,
-      date_event: event.dateEvent,
-      location: event.location,
-      ticket_price: event.ticketPrice,
-      quantity,
-      img_url: event.imgUrl,
-    };
-    console.log("Adding to cart:", eventToCart);
-    addToCart(eventToCart);
+    addToCart({ ...event, quantity });
   };
 
   const handleQuantityChange = (e) => {
@@ -60,7 +47,7 @@ const EventDetail = () => {
   };
 
   if (!event.eventId) {
-    return <RegisterEventForm />;
+    return <div>Cargando...</div>;
   }
 
   return (
@@ -73,77 +60,53 @@ const EventDetail = () => {
     >
       <MyNavbar />
       <div className="container mt-5" style={{ flex: 1 }}>
-        <Card style={{ position: "relative", margin: "10px" }}>
-          <div
-            onClick={handleToggleFavorite}
-            style={{
-              position: "absolute",
-              bottom: "10px",
-              right: "10px",
-              cursor: "pointer",
-              backgroundColor: "white",
-              borderRadius: "50%",
-              padding: "10px",
-            }}
-          >
-            {userSession.favs.some((fav) => fav.eventId === event.eventId) ? (
-              <HeartFill size={30} color="red" />
-            ) : (
-              <Heart size={30} />
-            )}
-          </div>
+        <h2>{event.title}</h2>
+        <Image src={event.imgUrl} rounded fluid />
+        <p>{event.description}</p>
+        <p>
+          <strong>Fecha:</strong> {event.dateEvent}
+        </p>
+        <p>
+          <strong>Ubicación:</strong> {event.location}
+        </p>
+        <p>
+          <strong>Precio del Boleto:</strong> {event.ticketPrice} CLP
+        </p>
+        <p>
+          <strong>Boletos Disponibles:</strong> {event.ticketsAvailable}
+        </p>
 
-          <Card.Img
-            variant="top"
-            src={event.imgUrl}
-            style={{
-              maxWidth: "100%",
-              height: "auto",
-              borderRadius: "30px",
-              padding: "20px",
-            }}
-          />
-          <Card.Body>
-            <Card.Title>
-              <strong>{event.title}</strong>
-            </Card.Title>
-            <Card.Text>{event.description}</Card.Text>
-            <p>
-              <strong>Fecha:</strong> {event.dateEvent}
-            </p>
-            <p>
-              <strong>Ubicación:</strong> {event.location}
-            </p>
-            <p>
-              <strong>Precio del Boleto:</strong> {event.ticketPrice} CLP
-            </p>
-            <p>
-              <strong>Boletos Disponibles:</strong> {event.ticketsAvailable}
-            </p>
-            {isOwnEvent ? (
-              <Button variant="primary" onClick={handleRedirectMyEvents}>
-                Ver en Mis Eventos
+        {isOwnEvent ? (
+          <>
+            <Button variant="primary" onClick={handleRedirectMyEvents}>
+              Ver en Mis Eventos
+            </Button>
+          </>
+        ) : (
+          <>
+            <div className="d-flex align-items-center mb-3">
+              <Button variant="success" onClick={handleAddToCart}>
+                Agregar al Carrito
               </Button>
-            ) : (
-              <>
-                <div className="d-flex align-items-center mb-3">
-                  <Button variant="success" onClick={handleAddToCart}>
-                    Agregar al Carrito
-                  </Button>
-                  <Form.Control
-                    type="number"
-                    min="1"
-                    max="4"
-                    value={quantity}
-                    onChange={handleQuantityChange}
-                    className="ms-3"
-                    style={{ width: "60px" }}
-                  />
-                </div>
-              </>
-            )}
-          </Card.Body>
-        </Card>
+              <Form.Control
+                type="number"
+                min="1"
+                max="4"
+                value={quantity}
+                onChange={handleQuantityChange}
+                className="ms-3"
+                style={{ width: "60px" }}
+              />
+            </div>
+            <div onClick={handleToggleFavorite} style={{ cursor: "pointer" }}>
+              {userSession.favs.some((fav) => fav.eventId === event.eventId) ? (
+                <HeartFill size={30} color="red" />
+              ) : (
+                <Heart size={30} />
+              )}
+            </div>
+          </>
+        )}
       </div>
       <MyFooter />
     </div>

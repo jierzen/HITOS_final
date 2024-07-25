@@ -19,13 +19,13 @@ import { RouterGuard } from './components/utils/RouterGuard';
     function App() {
         const { userSession, logIn } = useContext(MarketplaceContext);
 
-    useEffect(() => {
-        const token = window.sessionStorage.getItem("token");
-        if (token && !userSession.isLoggedIn) {
+        useEffect(() => {
+          const token = localStorage.getItem("token");
+          if (token && !userSession.isLoggedIn) {
             // Llama a logIn con el token para autenticar al usuario.
-            logIn(token);
-        }
-    }, [userSession.isLoggedIn, logIn]);
+            logIn(userSession.email, 'dummyPassword'); // Ajusta según el flujo real
+          }
+        }, [userSession.isLoggedIn, logIn]);
     return (
         <>
             <Routes>
@@ -40,11 +40,12 @@ import { RouterGuard } from './components/utils/RouterGuard';
                 <Route path="/cart" element={<Cart />} />{/*Ver mi carrito y da posibilidad de eliminar un evento del carrito*/}
 
                 {/* Seccion Privada */}
-                <Route path="/profile" element={<RouterGuard isAllowed={userSession.role.includes('admin') && userSession.isLoggedIn}><Profile /></RouterGuard>} />
+                <Route path="/profile/perfil" element={<RouterGuard isAllowed={userSession.isLoggedIn}><Profile /></RouterGuard>} />
                 <Route path="/profile/events" element={<RouterGuard isAllowed={userSession.isLoggedIn}><ManageEvents /></RouterGuard>} />{/*Ver mis eventos, publicar, editar o eliminar un evento*/}
                 <Route path="/profile/tickets" element={<RouterGuard isAllowed={userSession.isLoggedIn}><Tickets /></RouterGuard>} />{/*Ver mis tickets comprados*/}
                 <Route path="/profile/tickets/:ticketId" element={<RouterGuard isAllowed={userSession.isLoggedIn}><TicketDetail /></RouterGuard>} />{/*Ver el detalle de un ticket comprado*/}
                 <Route path="/profile/favorites" element={<RouterGuard isAllowed={userSession.isLoggedIn}><Favorites /></RouterGuard>} />{/*Ver mis favoritos y da posibilidad de eliminar un evento de favoritos*/}
+                
             </Routes>
         </>
     );

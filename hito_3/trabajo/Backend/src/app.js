@@ -37,7 +37,38 @@ app.get("/api/users/perfil", async (req, res)=> {
     res.status(error.code || 500).send(error)
     }
 })
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
 
+  try {
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(401).json({ message: 'Email no encontrado' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
+    }
+
+    const token = jwt.sign({ id: user._id, email: user.email }, 'tu_secreto', { expiresIn: '1h' });
+
+    res.json({
+      token,
+      username: user.username,
+      profile_picture: user.profile_picture,
+      role: user.role,
+      events: user.events,
+      favs: user.favs,
+      cart: user.cart,
+      tickets: user.tickets,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;

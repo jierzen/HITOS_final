@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
 const useDeveloper = () => {
-  const [user, setUser] = useState(null)
+  const [userSession, setUserSession] = useState(null)
 
-  const setDeveloper = (develop) => setUser(develop)
+  const setDeveloper = (develop) => setUserSession(develop)
 
-  return { getDeveloper: user, setDeveloper }
+  return { getDeveloper: userSession, setDeveloper }
 }
 
 export default useDeveloper

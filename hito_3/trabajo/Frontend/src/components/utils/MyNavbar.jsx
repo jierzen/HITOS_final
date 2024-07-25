@@ -6,8 +6,9 @@ import logo from "../../assets/logo.png";
 import cartIcon from "../../assets/cart-icon.png";
 
 const MyNavbar = () => {
+  
   const { userSession, handleLogOut } = useContext(MarketplaceContext);
-  const cartCount = userSession.cart.length;
+  const cartCount = userSession.cart?.length || 0 ;
 
   return (
     <Navbar bg="white" expand="lg" style={{ borderBottom: "1px solid #ccc", height: "120px" }}>
@@ -60,7 +61,7 @@ const MyNavbar = () => {
                   className="me-2"
                 />
                 <NavDropdown title={userSession.username} id="user-nav-dropdown">
-                  <NavDropdown.Item as={Link} to="/profile">Perfil</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/profile/perfil">Perfil</NavDropdown.Item>
                   <NavDropdown.Item onClick={handleLogOut}>Cerrar sesión</NavDropdown.Item>
                 </NavDropdown>
               </>

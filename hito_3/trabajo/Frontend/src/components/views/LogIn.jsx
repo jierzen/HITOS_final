@@ -4,8 +4,7 @@ import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import { useNavigate } from "react-router-dom";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
-import axios from "axios";
-import { ENDPOINT } from "../../config/constans";
+
 
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
@@ -17,7 +16,7 @@ const Login = () => {
 
   useEffect(() => {
     if (userSession.isLoggedIn) {
-      navigate("/profile", { replace: true });
+      navigate("/profile/perfil", { replace: true });
     }
   }, [userSession.isLoggedIn, navigate]);
 
@@ -32,16 +31,7 @@ const Login = () => {
       return window.alert("Por favor, ingresa tu correo y contraseña.");
     }
 
-    axios.post(ENDPOINT.login, { email, password })
-      .then(({ data }) => {
-        window.sessionStorage.setItem("token", data.token);
-        window.alert('Usuario identificado con éxito 😀.')
-        logIn(email, password);
-      })
-      .catch(({ response: { data } }) => {
-        console.error(data);
-        window.alert(`${data.message} 🙁.`);
-      });
+    logIn(email, password);
   };
 
   return (
