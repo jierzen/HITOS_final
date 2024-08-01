@@ -2,7 +2,7 @@
 
 -- Crear la Base de Datos
 CREATE DATABASE eventos;
-\c eventos;
+
 
 -- Usuarios
 CREATE TABLE users (

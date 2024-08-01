@@ -74,7 +74,6 @@ const Events = () => {
     }
   };
 
-
   return (
     <div className="min-vh-100 d-flex flex-column">
       <MyNavbar/>

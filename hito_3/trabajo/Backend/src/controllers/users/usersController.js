@@ -1,5 +1,6 @@
 const { UsersCollection } = require('../../database/models/usersModel');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // Controlador para registrar un nuevo usuario
 const add_user_controller = async (req, res, next) => {
@@ -35,13 +36,18 @@ const get_profile_controller = async (req, res, next) => {
 // Controlador para actualizar el perfil del usuario
 const update_profile_controller = async (req, res, next) => {
     try {
-        const { user_id } = req.user;
+        const { user_id } = req.params;
         const { email, password, username, profile_picture, is_admin } = req.body;
 
         const existingUser = await UsersCollection.getUserByEmail(email);
-        if (existingUser && existingUser.user_id !== user_id) {
+        if (existingUser && existingUser.user_id != user_id) {
             return res.status(400).json({ error: 'El correo electrónico ya está registrado.' });
         }
+
+        // let passwordHash = null;
+        // if (password) {
+        //     passwordHash = await bcrypt.hash(password, 10);
+        // }
 
         const response = await UsersCollection.updateUser(user_id, email, password, username, profile_picture, is_admin);
         res.status(200).json(response);
@@ -60,9 +66,25 @@ const login_controller = async (req, res, next) => {
     }
 };
 
+const delete_user_controller = async (req, res, next) => {
+    try {
+        const { user_id } = req.params;
+
+        const response = await UsersCollection.deleteUser(user_id);
+        if (!response) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({ msg: 'Usuario eliminado con éxito' });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     add_user_controller,
     login_controller,
     get_profile_controller,
-    update_profile_controller
+    update_profile_controller,
+    delete_user_controller
 };

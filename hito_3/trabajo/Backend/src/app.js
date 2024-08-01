@@ -106,18 +106,7 @@ app.post('/login', async (req, res) => {
   });
 
 
-app.post("/api/registrarse", async (req, res) => {
-    try {
-    const { email, password } = req.body
-    await verificarCredenciales(email, password, rol, lenguage)
-    const token = jwt.sign({ email }, process.env.JWT_SECRET , { expiresIn: 60 })
-    res.send(token)
-    } catch (error) {
-    console.log(error)
-    res.status(error.code || 500).send(error)
-    }
-    })
-    
+
 app.post("/api/users/registrarse", async (req, res) => {
     try {
     const usuario = req.body
@@ -127,6 +116,18 @@ app.post("/api/users/registrarse", async (req, res) => {
     res.status(500).send(error)
     }
     })
+    app.put('/api/profile/perfil/:id', (req, res) => {
+      const id = parseInt(req.params.id);
+      const { email, username, profile_picture } = req.body;
+      const index = users.findIndex(user => user.id === id);
+      if (index !== -1) {
+        users[index] = { id, email, username, profile_picture };
+        res.json(users[index]);
+      } else {
+        res.status(404).send('Pelicula no Encontrada');
+      }
+    });
+
 
 module.exports = app;
 

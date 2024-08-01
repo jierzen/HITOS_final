@@ -5,7 +5,6 @@ import MyFooter from "../utils/MyFooter";
 import { useNavigate } from "react-router-dom";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
 
-
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 const Login = () => {
@@ -20,7 +19,7 @@ const Login = () => {
     }
   }, [userSession.isLoggedIn, navigate]);
 
-  const handleLogin = (e) => {
+  const handleLoginSubmit = (e) => {
     e.preventDefault();
 
     if (!emailRegex.test(email)) {
@@ -39,7 +38,7 @@ const Login = () => {
       <MyNavbar />
       <div className="container mt-5" style={{ flex: 1 }}>
         <h2>Ingresa a tu perfil</h2>
-        <Form onSubmit={handleLogin}>
+        <Form onSubmit={handleLoginSubmit}>
           <Form.Group controlId="formEmail">
             <Form.Label>Correo</Form.Label>
             <Form.Control

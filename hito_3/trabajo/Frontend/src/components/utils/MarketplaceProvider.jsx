@@ -12,10 +12,10 @@ export const MarketplaceProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem('session'))
       : {
           isLoggedIn: false,
+          user_id: null,
           username: "",
           email: "",
           profile_picture: "",
-          role: "",
           events: [],
           favs: [],
           cart: [],
@@ -26,59 +26,95 @@ export const MarketplaceProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Si hay un token en localStorage, intentar iniciar sesión automáticamente
-    if (token && !userSession.isLoggedIn) {
-      axios.get(`${ENDPOINT.login}`, { headers: { Authorization: `Bearer ${token}` } })
-        .then(response => {
-          const { username, profile_picture, role, events, favs, cart, tickets } = response.data;
-          setUserSession({
-            isLoggedIn: true,
-            email: userSession.email,
-            username,
-            profile_picture,
-            role,
-            events,
-            favs,
-            cart,
-            tickets,
-          });
-        })
-        .catch(error => {
-          console.error("Error al verificar el token:", error);
-          // Limpiar el token y redirigir si el token no es válido
-          setToken(null);
-          localStorage.removeItem('token');
-          localStorage.removeItem('session');
-          navigate("/");
-        });
+    const storedSession = localStorage.getItem('session');
+    if (token && !userSession.isLoggedIn && storedSession) {
+      const sessionData = JSON.parse(storedSession);
+      setUserSession({
+        isLoggedIn: sessionData.isLoggedIn,
+        user_id: sessionData.user_id,
+        email: sessionData.email,
+        username: sessionData.username,
+        profile_picture: sessionData.profile_picture,
+        events: sessionData.events,
+        favs: sessionData.favs,
+        cart: sessionData.cart,
+        tickets: sessionData.tickets,
+      });
     }
-  }, [token, userSession.isLoggedIn, navigate, userSession.email]);
+  }, [token, userSession.isLoggedIn, navigate]);
 
-  const handleLogOut = () => {
-    console.log("Cerrar sesión");
+  const logIn = async (email, password) => {
+    try {
+      const response = await axios.post(`${ENDPOINT.login}`, { email, password });
+      const { token, user_id, username, profile_picture } = response.data;
+  
+      setUserSession({
+        isLoggedIn: true,
+        user_id,
+        email,
+        username,
+        profile_picture,
+        events: [],
+        favs: [],
+        cart: [],
+        tickets: [],
+      });
+  
+      localStorage.setItem('token', token);
+      localStorage.setItem('session', JSON.stringify({
+        isLoggedIn: true,
+        user_id,
+        email,
+        username,
+        profile_picture,
+        events: [],
+        favs: [],
+        cart: [],
+        tickets: [],
+      }));
+  
+      setToken(token);
+      navigate("/profile/perfil");
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      window.alert("Email o contraseña incorrectos");
+    }
+  };
+
+  const logOut = () => {
     setUserSession({
       isLoggedIn: false,
+      user_id: userSession.user_id,
       username: "",
       email: "",
       profile_picture: "",
-      role: "",
       events: [],
       favs: [],
       cart: [],
       tickets: [],
     });
-    localStorage.removeItem('session');
     localStorage.removeItem('token');
+    localStorage.removeItem('session');
     setToken(null);
     navigate("/");
   };
 
-  const updateProfile = (data) => {
-    setUserSession((prevSession) => ({
-      ...prevSession,
-      ...data,
-    }));
+  const updateProfile = async (updatedData) => {
+    try {
+      await axios.put(`${ENDPOINT.perfil}/update/${userSession.user_id}`, updatedData, { headers: { Authorization: `Bearer ${token}` } });
+      setUserSession({
+        ...userSession,
+        ...updatedData,
+      });
+      localStorage.setItem('session', JSON.stringify({
+        ...userSession,
+        ...updatedData,
+      }));
+    } catch (error) {
+      console.error("Error al actualizar el perfil:", error);
+    }
   };
+
   const addEvent = (event) => {
     setUserSession(prevSession => ({
       ...prevSession,
@@ -102,41 +138,6 @@ export const MarketplaceProvider = ({ children }) => {
     }));
   };
 
-  const logIn = (email, password) => {
-    axios.post(`${ENDPOINT.login}`, { email, password })
-      .then((response) => {
-        const { token, username, profile_picture, role, events, favs, cart, tickets } = response.data;
-        setUserSession({
-          isLoggedIn: true,
-          email,
-          username,
-          profile_picture,
-          role,
-          events,
-          favs,
-          cart,
-          tickets,
-        });
-        localStorage.setItem('token', token);
-        localStorage.setItem('session', JSON.stringify({
-          isLoggedIn: true,
-          email,
-          username,
-          profile_picture,
-          role,
-          events,
-          favs,
-          cart,
-          tickets,
-        }));
-        setToken(token);
-        navigate("/profile/perfil");
-      })
-      .catch((error) => {
-        console.error("Error al iniciar sesión:", error);
-      });
-  };
-
   const addFav = (event) => {
     setUserSession(prevSession => {
       const itemExists = prevSession.favs.find(item => item.eventId === event.eventId);
@@ -146,7 +147,6 @@ export const MarketplaceProvider = ({ children }) => {
           favs: prevSession.favs.filter(item => item.eventId !== event.eventId)
         };
       } else {
-        
         return {
           ...prevSession,
           favs: [...prevSession.favs, { ...event }]
@@ -179,28 +179,35 @@ export const MarketplaceProvider = ({ children }) => {
   };
 
   const addToCart = (event) => {
-    console.log('Evento con precio = ',event)
-    const numericPrice = typeof event.ticketPrice === 'string' ? parseInt(event.ticketPrice.replace(/\D/g, ''), 10) : event.ticketPrice;
-    
+    console.log('Evento con precio = ', event)
+    const numericPrice = typeof event.ticketPrice === 'string'
+      ? parseInt(event.ticketPrice.replace(/\D/g, ''), 10)
+      : event.ticketPrice;
+
     setUserSession(prevSession => {
       const itemExists = prevSession.cart.find(item => item.eventId === event.eventId);
       if (itemExists) {
         return {
-          ...prevSession, cart: prevSession.cart.map(item =>
-                item.eventId === event.eventId ? { ...item, quantity: item.quantity + 1 } : item )};
+          ...prevSession,
+          cart: prevSession.cart.map(item =>
+            item.eventId === event.eventId ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        };
       } else {
         return {
           ...prevSession,
-          cart: [...prevSession.cart, { ...event, ticketPrice: numericPrice, quantity: 1 }]};
+          cart: [...prevSession.cart, { ...event, ticketPrice: numericPrice, quantity: 1 }]
+        };
       }
     });
   };
+
   return (
     <MarketplaceContext.Provider
       value={{
         userSession,
         logIn,
-        handleLogOut,
+        logOut,
         updateProfile,
         addFav,
         removeFromFavs,
@@ -209,7 +216,8 @@ export const MarketplaceProvider = ({ children }) => {
         deleteEvent,
         updateCart,
         removeFromCart,
-        addToCart
+        addToCart,
+        token, // Asegúrate de exportar el token
       }}
     >
       {children}

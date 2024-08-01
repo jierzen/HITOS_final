@@ -54,6 +54,7 @@ const getAllUsers = async () => {
 const updateUser = async (user_id, email, password, username, profile_picture, is_admin) => {
     try {
         const passwordHash = await bcrypt.hash(password, 10);
+        console.log(typeof passwordHash, passwordHash, "contraseña actualizada")
         const consulta = "UPDATE users SET email = $1, password = $2, username = $3, profile_picture = $4, is_admin = $5 WHERE user_id = $6 RETURNING *";
         const values = [email, passwordHash, username, profile_picture, is_admin, user_id];
         const { rows } = await database.query(consulta, values);
