@@ -25,7 +25,7 @@ const Favorites = () => {
           favs.map((item, index) => (
             <div key={index} className="d-flex align-items-center mb-3">
               <Image
-                src={item.imgUrl}
+                src={item.img_url}
                 rounded
                 width={50}
                 height={50}
