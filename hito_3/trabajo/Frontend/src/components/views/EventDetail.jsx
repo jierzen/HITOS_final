@@ -59,31 +59,33 @@ const EventDetail = () => {
       }}
     >
       <MyNavbar />
-      <div className="container mt-5" style={{ flex: 1 }}>
-        <h2>{event.title}</h2>
-        <Image src={event.imgUrl} rounded fluid />
-        <p>{event.description}</p>
-        <p>
-          <strong>Fecha:</strong> {event.dateEvent}
-        </p>
-        <p>
-          <strong>Ubicación:</strong> {event.location}
-        </p>
-        <p>
-          <strong>Precio del Boleto:</strong> {event.ticketPrice} CLP
-        </p>
-        <p>
-          <strong>Boletos Disponibles:</strong> {event.ticketsAvailable}
-        </p>
-
-        {isOwnEvent ? (
-          <>
+      <div
+        className="container my-5 d-flex justify-content-center"
+        style={{ flex: 1 }}
+      >
+        <div className="card p-4" style={{ width: "100%", maxWidth: "800px" }}>
+          <div style={{ marginBottom: "20px" }}>
+            <h2>{event.title}</h2>
+            <Image src={event.img_url} rounded fluid />
+            <p>{event.description}</p>
+            <p>
+              <strong>Fecha:</strong> {event.date_event}
+            </p>
+            <p>
+              <strong>Ubicación:</strong> {event.location}
+            </p>
+            <p>
+              <strong>Precio del Boleto:</strong> {event.ticket_price} CLP
+            </p>
+            <p>
+              <strong>Boletos Disponibles:</strong> {event.tickets_available}
+            </p>
+          </div>
+          {isOwnEvent ? (
             <Button variant="primary" onClick={handleRedirectMyEvents}>
               Ver en Mis Eventos
             </Button>
-          </>
-        ) : (
-          <>
+          ) : (
             <div className="d-flex align-items-center mb-3">
               <Button variant="success" onClick={handleAddToCart}>
                 Agregar al Carrito
@@ -97,16 +99,22 @@ const EventDetail = () => {
                 className="ms-3"
                 style={{ width: "60px" }}
               />
+              <div
+                onClick={handleToggleFavorite}
+                style={{ cursor: "pointer" }}
+                className="ms-3"
+              >
+                {userSession.favs.some(
+                  (fav) => fav.eventId === event.eventId
+                ) ? (
+                  <HeartFill size={30} color="red" />
+                ) : (
+                  <Heart size={30} />
+                )}
+              </div>
             </div>
-            <div onClick={handleToggleFavorite} style={{ cursor: "pointer" }}>
-              {userSession.favs.some((fav) => fav.eventId === event.eventId) ? (
-                <HeartFill size={30} color="red" />
-              ) : (
-                <Heart size={30} />
-              )}
-            </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
       <MyFooter />
     </div>

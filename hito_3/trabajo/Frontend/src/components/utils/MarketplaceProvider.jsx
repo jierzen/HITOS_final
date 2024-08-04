@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ENDPOINT } from "../../config/constans";
 
-// Crear el contexto
 export const MarketplaceContext = createContext();
 
 export const MarketplaceProvider = ({ children }) => {
   const [userSession, setUserSession] = useState(
-    localStorage.getItem('session')
-      ? JSON.parse(localStorage.getItem('session'))
+    localStorage.getItem("session")
+      ? JSON.parse(localStorage.getItem("session"))
       : {
           isLoggedIn: false,
           user_id: null,
@@ -22,11 +21,11 @@ export const MarketplaceProvider = ({ children }) => {
           tickets: [],
         }
   );
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedSession = localStorage.getItem('session');
+    const storedSession = localStorage.getItem("session");
     if (token && !userSession.isLoggedIn && storedSession) {
       const sessionData = JSON.parse(storedSession);
       setUserSession({
@@ -45,9 +44,12 @@ export const MarketplaceProvider = ({ children }) => {
 
   const logIn = async (email, password) => {
     try {
-      const response = await axios.post(`${ENDPOINT.login}`, { email, password });
+      const response = await axios.post(`${ENDPOINT.login}`, {
+        email,
+        password,
+      });
       const { token, user_id, username, profile_picture } = response.data;
-  
+
       setUserSession({
         isLoggedIn: true,
         user_id,
@@ -59,20 +61,23 @@ export const MarketplaceProvider = ({ children }) => {
         cart: [],
         tickets: [],
       });
-  
-      localStorage.setItem('token', token);
-      localStorage.setItem('session', JSON.stringify({
-        isLoggedIn: true,
-        user_id,
-        email,
-        username,
-        profile_picture,
-        events: [],
-        favs: [],
-        cart: [],
-        tickets: [],
-      }));
-  
+
+      localStorage.setItem("token", token);
+      localStorage.setItem(
+        "session",
+        JSON.stringify({
+          isLoggedIn: true,
+          user_id,
+          email,
+          username,
+          profile_picture,
+          events: [],
+          favs: [],
+          cart: [],
+          tickets: [],
+        })
+      );
+
       setToken(token);
       navigate("/profile/perfil");
     } catch (error) {
@@ -93,110 +98,139 @@ export const MarketplaceProvider = ({ children }) => {
       cart: [],
       tickets: [],
     });
-    localStorage.removeItem('token');
-    localStorage.removeItem('session');
+    localStorage.removeItem("token");
+    localStorage.removeItem("session");
     setToken(null);
     navigate("/");
   };
 
   const updateProfile = async (updatedData) => {
     try {
-      await axios.put(`${ENDPOINT.perfil}/update/${userSession.user_id}`, updatedData, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.put(
+        `${ENDPOINT.perfil}/update/${userSession.user_id}`,
+        updatedData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setUserSession({
         ...userSession,
         ...updatedData,
       });
-      localStorage.setItem('session', JSON.stringify({
-        ...userSession,
-        ...updatedData,
-      }));
+      localStorage.setItem(
+        "session",
+        JSON.stringify({
+          ...userSession,
+          ...updatedData,
+        })
+      );
     } catch (error) {
       console.error("Error al actualizar el perfil:", error);
     }
   };
 
   const addEvent = (event) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      events: [...prevSession.events, event]
+      events: [...prevSession.events, event],
     }));
   };
 
   const updateEvent = (updatedEvent) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      events: prevSession.events.map(event =>
+      events: prevSession.events.map((event) =>
         event.eventId === updatedEvent.eventId ? updatedEvent : event
-      )
+      ),
     }));
   };
 
   const deleteEvent = (eventId) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      events: prevSession.events.filter(event => event.eventId !== eventId)
+      events: prevSession.events.filter((event) => event.eventId !== eventId),
     }));
   };
 
   const addFav = (event) => {
-    setUserSession(prevSession => {
-      const itemExists = prevSession.favs.find(item => item.eventId === event.eventId);
+    setUserSession((prevSession) => {
+      const itemExists = prevSession.favs.find(
+        (item) => item.eventId === event.eventId
+      );
       if (itemExists) {
         return {
           ...prevSession,
-          favs: prevSession.favs.filter(item => item.eventId !== event.eventId)
+          favs: prevSession.favs.filter(
+            (item) => item.eventId !== event.eventId
+          ),
         };
       } else {
         return {
           ...prevSession,
-          favs: [...prevSession.favs, { ...event }]
+          favs: [...prevSession.favs, { ...event }],
         };
       }
     });
   };
 
-  const removeFromFavs = (eventId) => {
-    setUserSession(prevSession => ({
+  // Función para comprar tickets desde el carrito
+
+  const buyTickets = (cartItems) => {
+    setUserSession((prevSession) => ({
       ...prevSession,
-      favs: prevSession.favs.filter(item => item.eventId !== eventId)
+      tickets: [...prevSession.tickets, ...cartItems],
+      cart: [],
+    }));
+  };
+
+  const removeFromFavs = (eventId) => {
+    setUserSession((prevSession) => ({
+      ...prevSession,
+      favs: prevSession.favs.filter((item) => item.eventId !== eventId),
     }));
   };
 
   const updateCart = (eventId, quantity) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      cart: prevSession.cart.map(item =>
+      cart: prevSession.cart.map((item) =>
         item.eventId === eventId ? { ...item, quantity } : item
-      )
+      ),
     }));
   };
 
   const removeFromCart = (eventId) => {
-    setUserSession(prevSession => ({
+    setUserSession((prevSession) => ({
       ...prevSession,
-      cart: prevSession.cart.filter(item => item.eventId !== eventId)
+      cart: prevSession.cart.filter((item) => item.eventId !== eventId),
     }));
   };
 
   const addToCart = (event) => {
-    console.log('Evento con precio = ', event)
-    const numericPrice = typeof event.ticketPrice === 'string'
-      ? parseInt(event.ticketPrice.replace(/\D/g, ''), 10)
-      : event.ticketPrice;
+    console.log("Evento con precio = ", event);
+    const numericPrice =
+      typeof event.ticketPrice === "string"
+        ? parseInt(event.ticketPrice.replace(/\D/g, ""), 10)
+        : event.ticketPrice;
 
-    setUserSession(prevSession => {
-      const itemExists = prevSession.cart.find(item => item.eventId === event.eventId);
+    setUserSession((prevSession) => {
+      const itemExists = prevSession.cart.find(
+        (item) => item.eventId === event.eventId
+      );
       if (itemExists) {
         return {
           ...prevSession,
-          cart: prevSession.cart.map(item =>
-            item.eventId === event.eventId ? { ...item, quantity: item.quantity + 1 } : item
-          )
+          cart: prevSession.cart.map((item) =>
+            item.eventId === event.eventId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
         };
       } else {
         return {
           ...prevSession,
-          cart: [...prevSession.cart, { ...event, ticketPrice: numericPrice, quantity: 1 }]
+          cart: [
+            ...prevSession.cart,
+            { ...event, ticketPrice: numericPrice, quantity: 1 },
+          ],
         };
       }
     });
@@ -217,7 +251,8 @@ export const MarketplaceProvider = ({ children }) => {
         updateCart,
         removeFromCart,
         addToCart,
-        token, // Asegúrate de exportar el token
+        token,
+        buyTickets,
       }}
     >
       {children}
