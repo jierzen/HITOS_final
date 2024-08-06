@@ -19,11 +19,12 @@ Content-Type: application/json
 {
 "user_id": 1,   
 "title": 1,
-"description": "holanda", 
+"description": "tocata 3", 
 "date": "2024-07-31T00:00:00.000Z", 
 "location": "2024-07-31T00:00:00.000Z", 
 "ticket_price": 10000, 
-"tickets_available": 10
+"tickets_available": 100,
+"img_url": "linkpruebafoto"
 }
 ###
 
@@ -31,10 +32,10 @@ POST http://127.0.0.1:3000/api/profile/registrarse
 Content-Type: application/json
 
 {
-    "email": "Juan.pinto66@gmail.com", 
-    "password": "12345", 
-    "profile_picture": "FullStackDeveloper",
-    "username": "admin",
+    "email": "juan@juan.cl",
+    "password": "12345fdsad6",
+    "profile_picture": "hola mundo",
+    "username": "comoestas",
     "is_admin": true
 }
 ###
@@ -53,23 +54,21 @@ POST http://127.0.0.1:3000/api/profile/login
 Content-Type: application/json
 
 {
-    "email": "juan@juan.cl",
-    "password": "12345fdsad6",
+    "email": "juanito@juan.cl",
+    "password": "12345fdasdsssad6",
     "profile_picture": "hola mundo",
     "username": "comoestas",
-    "created_at": "2024-07-26:01:36.783Z",
     "is_admin": true
 }
 ###
-PUT http://127.0.0.1:3000/api/profile/update/23
+PUT http://127.0.0.1:3000/api/profile/update/1
 Content-Type: application/json
 
 {
-    "email": "juan@juan.cl",
-    "password": "12345fdsad6",
+    "email": "juanito@juan.cl",
+    "password": "12345fdasdsssad6",
     "profile_picture": "hola mundo",
     "username": "comoestas",
-    "created_at": "2024-07-26:01:36.783Z",
     "is_admin": true
 }
 ###

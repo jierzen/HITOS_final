@@ -11,8 +11,9 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
-  const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(false);
+  const [loading, setLoading] = useState(false); // Agregado para mostrar estado de carga
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isRegistered) {
@@ -23,24 +24,32 @@ const SignUp = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     
+    if (!name || !email || !password) {
+      window.alert("Por favor, complete todos los campos obligatorios.");
+      return;
+    }
+
+    setLoading(true); // Activar el estado de carga
+
     const userData = {
       username: name,
       email: email,
       password: password,
       profile_picture: photoUrl,
       is_admin: true,
-    }
-    console.log(userData);
+    };
 
     axios.post(ENDPOINT.users, userData)
       .then(({ data }) => {
         window.alert("Usuario registrado con éxito 😀.");
         console.log("Usuario creado:", data);
         setIsRegistered(true);
+        setLoading(false); // Desactivar el estado de carga
       })
       .catch(({ response: { data } }) => {
         console.error(data);
         window.alert(`${data.message} 🙁.`);
+        setLoading(false); // Desactivar el estado de carga
       });
   };
 
@@ -63,6 +72,7 @@ const SignUp = () => {
               placeholder="Nombre completo"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </Form.Group>
 
@@ -73,6 +83,7 @@ const SignUp = () => {
               placeholder="Ingresar email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </Form.Group>
 
@@ -83,6 +94,7 @@ const SignUp = () => {
               placeholder="Ingresar contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </Form.Group>
 
@@ -96,8 +108,8 @@ const SignUp = () => {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mt-4">
-            Registrar
+          <Button variant="primary" type="submit" className="mt-4" disabled={loading}>
+            {loading ? "Registrando..." : "Registrar"}
           </Button>
         </Form>
       </div>

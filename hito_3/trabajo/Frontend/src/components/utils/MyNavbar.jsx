@@ -1,22 +1,45 @@
-import React, { useContext } from "react";
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  Container,
-  Row,
-  Col,
-  Image,
-  Badge,
-} from "react-bootstrap";
+import React, { useContext, useState, useEffect } from "react";
+import { Navbar, Nav, NavDropdown, Container, Row, Col, Image, Badge } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
 import logo from "../../assets/logo.png";
 import cartIcon from "../../assets/cart-icon.png";
+import axios from "axios";
 
 const MyNavbar = () => {
   const { userSession, logOut } = useContext(MarketplaceContext);
-  const cartCount = userSession.cart?.length || 0;
+  const cartCount = userSession?.cart?.length || 0;
+
+  const [profileImage, setProfileImage] = useState('/default-profile.png');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProfileImage = async () => {
+      if (userSession?.profile_picture) {
+        try {
+          const response = await axios.get(userSession.profile_picture, {
+            responseType: 'blob'
+          });
+          const imageBlob = response.data;
+          const imageUrl = URL.createObjectURL(imageBlob);
+          setProfileImage(imageUrl);
+        } catch (error) {
+          console.error('Error al cargar la imagen de perfil:', error);
+          setProfileImage('/default-profile.png');
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    loadProfileImage();
+  }, [userSession?.profile_picture]);
+
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <Navbar
@@ -89,11 +112,12 @@ const MyNavbar = () => {
                   )}
                 </Link>
                 <Image
-                  src={userSession.picture}
+                  src={profileImage} // Usa profileImage aquí
                   roundedCircle
                   width={40}
                   height={40}
                   className="me-2"
+                  alt="Perfil"
                 />
                 <NavDropdown
                   title={userSession.username}
@@ -107,6 +131,7 @@ const MyNavbar = () => {
                     Cerrar sesión
                   </NavDropdown.Item>
                 </NavDropdown>
+                <p>{userSession.profile_picture}</p> {/* Mostrar URL aquí */}
               </>
             ) : (
               <Link to="/cart" className="position-relative me-3">
@@ -129,3 +154,6 @@ const MyNavbar = () => {
 };
 
 export default MyNavbar;
+
+
+

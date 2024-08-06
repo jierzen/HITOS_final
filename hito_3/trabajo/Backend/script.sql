@@ -1,4 +1,4 @@
--- Active: 1720894814659@@127.0.0.1@5432@eventos
+-- Active: 1722729972892@@127.0.0.1@5432@eventos
 
 -- Crear la Base de Datos
 CREATE DATABASE eventos;
@@ -25,6 +25,7 @@ CREATE TABLE eventos (
     location VARCHAR(255) NOT NULL,
     ticket_price NUMERIC(10, 2) NOT NULL,
     tickets_available INT NOT NULL,
+    img_url VARCHAR (255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );

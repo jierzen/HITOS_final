@@ -103,7 +103,7 @@ const RegisterEventForm = ({ onSave }) => {
         />
       </Form.Group>
       <Form.Group className="mb-3">
-        <Form.Label>URL de la Imagen</Form.Label>
+        <Form.Label>URL de la Imadasdagen</Form.Label>
         <Form.Control
           type="text"
           name="imgUrl"

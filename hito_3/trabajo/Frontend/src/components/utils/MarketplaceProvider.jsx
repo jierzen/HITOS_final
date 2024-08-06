@@ -44,10 +44,7 @@ export const MarketplaceProvider = ({ children }) => {
 
   const logIn = async (email, password) => {
     try {
-      const response = await axios.post(`${ENDPOINT.login}`, {
-        email,
-        password,
-      });
+      const response = await axios.post(`${ENDPOINT.login}`, { email, password });
       const { token, user_id, username, profile_picture } = response.data;
 
       setUserSession({
@@ -63,20 +60,17 @@ export const MarketplaceProvider = ({ children }) => {
       });
 
       localStorage.setItem("token", token);
-      localStorage.setItem(
-        "session",
-        JSON.stringify({
-          isLoggedIn: true,
-          user_id,
-          email,
-          username,
-          profile_picture,
-          events: [],
-          favs: [],
-          cart: [],
-          tickets: [],
-        })
-      );
+      localStorage.setItem("session", JSON.stringify({
+        isLoggedIn: true,
+        user_id,
+        email,
+        username,
+        profile_picture,
+        events: [],
+        favs: [],
+        cart: [],
+        tickets: [],
+      }));
 
       setToken(token);
       navigate("/profile/perfil");
@@ -89,7 +83,7 @@ export const MarketplaceProvider = ({ children }) => {
   const logOut = () => {
     setUserSession({
       isLoggedIn: false,
-      user_id: userSession.user_id,
+      user_id: null,
       username: "",
       email: "",
       profile_picture: "",
@@ -115,39 +109,71 @@ export const MarketplaceProvider = ({ children }) => {
         ...userSession,
         ...updatedData,
       });
-      localStorage.setItem(
-        "session",
-        JSON.stringify({
-          ...userSession,
-          ...updatedData,
-        })
-      );
+      localStorage.setItem("session", JSON.stringify({
+        ...userSession,
+        ...updatedData,
+      }));
     } catch (error) {
       console.error("Error al actualizar el perfil:", error);
     }
   };
 
-  const addEvent = (event) => {
-    setUserSession((prevSession) => ({
-      ...prevSession,
-      events: [...prevSession.events, event],
-    }));
+  const addEvent = async (event) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token || !userSession.user_id) return;
+
+      const response = await axios.post(
+        `${ENDPOINT.misEventos}/add`,
+        { ...event, user_id: userSession.user_id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setUserSession((prevSession) => ({
+        ...prevSession,
+        events: [...prevSession.events, response.data],
+      }));
+    } catch (error) {
+      console.error("Error al agregar evento:", error);
+    }
   };
 
-  const updateEvent = (updatedEvent) => {
-    setUserSession((prevSession) => ({
-      ...prevSession,
-      events: prevSession.events.map((event) =>
-        event.eventId === updatedEvent.eventId ? updatedEvent : event
-      ),
-    }));
+  const updateEvent = async (updatedEvent) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axios.put(`${ENDPOINT.misEventos}/${updatedEvent.id}`, updatedEvent, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setUserSession((prevSession) => ({
+        ...prevSession,
+        events: prevSession.events.map((event) =>
+          event.id === updatedEvent.id ? response.data : event
+        ),
+      }));
+    } catch (error) {
+      console.error("Error al actualizar evento:", error);
+    }
   };
 
-  const deleteEvent = (eventId) => {
-    setUserSession((prevSession) => ({
-      ...prevSession,
-      events: prevSession.events.filter((event) => event.eventId !== eventId),
-    }));
+  const deleteEvent = async (eventId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      await axios.delete(`${ENDPOINT.misEventos}/${eventId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setUserSession((prevSession) => ({
+        ...prevSession,
+        events: prevSession.events.filter((event) => event.id !== eventId),
+      }));
+    } catch (error) {
+      console.error("Error al eliminar evento:", error);
+    }
   };
 
   const addFav = (event) => {
@@ -170,8 +196,6 @@ export const MarketplaceProvider = ({ children }) => {
       }
     });
   };
-
-  // Función para comprar tickets desde el carrito
 
   const buyTickets = (cartItems) => {
     setUserSession((prevSession) => ({
@@ -205,7 +229,6 @@ export const MarketplaceProvider = ({ children }) => {
   };
 
   const addToCart = (event) => {
-    console.log("Evento con precio = ", event);
     const numericPrice =
       typeof event.ticketPrice === "string"
         ? parseInt(event.ticketPrice.replace(/\D/g, ""), 10)
@@ -251,8 +274,7 @@ export const MarketplaceProvider = ({ children }) => {
         updateCart,
         removeFromCart,
         addToCart,
-        token,
-        buyTickets,
+        buyTickets
       }}
     >
       {children}

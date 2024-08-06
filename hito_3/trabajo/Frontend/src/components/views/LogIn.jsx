@@ -4,6 +4,9 @@ import MyNavbar from "../utils/MyNavbar";
 import MyFooter from "../utils/MyFooter";
 import { useNavigate } from "react-router-dom";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
+import axios from "axios";
+import { ENDPOINT } from "../../config/constans";
+import useDeveloper from "../../hooks/useDeveloper";
 
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
@@ -12,6 +15,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { logIn, userSession } = useContext(MarketplaceContext);
+  const { setDeveloper } = useDeveloper();
 
   useEffect(() => {
     if (userSession.isLoggedIn) {
@@ -19,7 +23,7 @@ const Login = () => {
     }
   }, [userSession.isLoggedIn, navigate]);
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
 
     if (!emailRegex.test(email)) {
@@ -30,7 +34,29 @@ const Login = () => {
       return window.alert("Por favor, ingresa tu correo y contraseña.");
     }
 
-    logIn(email, password);
+    try {
+      const response = await axios.post(`${ENDPOINT.login}`, {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      // Store token in sessionStorage
+      window.sessionStorage.setItem('token', token);
+
+      // Update developer session
+      setDeveloper(user);
+
+      // Call the logIn function from MarketplaceContext
+      logIn(email, password);
+
+      // Navigate to profile page
+      navigate("/profile/perfil", { replace: true });
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      window.alert("Email o contraseña incorrectos");
+    }
   };
 
   return (

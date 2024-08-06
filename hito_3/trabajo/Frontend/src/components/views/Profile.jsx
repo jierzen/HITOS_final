@@ -5,31 +5,67 @@ import MyFooter from "../utils/MyFooter";
 import { MarketplaceContext } from "../utils/MarketplaceProvider";
 import axios from "axios";
 import { ENDPOINT } from "../../config/constans";
-import BackButton from "./backButton"; 
+import useDeveloper from "../../hooks/useDeveloper";
+
+
 
 const Profile = () => {
-  const { userSession, updateProfile, logOut } = useContext(MarketplaceContext);
+  const { userSession, setDeveloper } = useDeveloper();
+  const { updateProfile, logOut } = useContext(MarketplaceContext);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    email: userSession?.email || "",
-    username: userSession?.username || "",
-    profile_picture: userSession?.profile_picture || "",
+    email: "",
+    username: "",
+    profile_picture: "",
   });
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!userSession.isLoggedIn) {
-      navigate("/login");
+    const getDeveloperData = async () => {
+      const token = window.sessionStorage.getItem('token');
+
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const response = await axios.get(ENDPOINT.perfil, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const user = response.data.user;
+        setDeveloper(user);
+        setFormData({
+          email: user.email,
+          username: user.username,
+          profile_picture: user.profile_picture
+        });
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching developer data:', error);
+        window.sessionStorage.removeItem('token');
+        setDeveloper(null);
+        navigate('/');
+      }
+    };
+
+    if (isLoading) {
+      getDeveloperData();
     }
-  }, [userSession.isLoggedIn, navigate]);
+  }, [navigate, setDeveloper, isLoading]);
+
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prevData => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
 
   const handleEdit = () => {
@@ -38,28 +74,32 @@ const Profile = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-  
-    if (!userSession.user_id) {
+
+    if (!userSession?.user_id) {
       console.error("user_id is not defined");
       window.alert("No se pudo encontrar el ID del usuario.");
       return;
     }
-  
+
     try {
       const updatedData = { ...formData };
       if (password) {
         updatedData.password = password;
       }
-  
+
       const response = await axios.put(
         `${ENDPOINT.perfil}/update/${userSession.user_id}`,
         updatedData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${window.sessionStorage.getItem('token')}` } }
       );
-  
+
       console.log("Usuario modificado:", response.data);
-  
+
       updateProfile(response.data);
+      setDeveloper({
+        ...response.data,
+        is_admin: true // Asegura que is_admin siempre sea true
+      });
       setIsEditing(false);
       window.alert("Usuario actualizado con éxito 😀.");
     } catch (error) {
@@ -67,6 +107,10 @@ const Profile = () => {
       window.alert("Hubo un problema al actualizar el perfil 🙁.");
     }
   };
+
+  if (!userSession) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -97,7 +141,6 @@ const Profile = () => {
                               className="form-control"
                               id="username"
                               name="username"
-                              placeholder="Ingrese su nombre de usuario"
                               value={formData.username}
                               onChange={handleChange}
                               required
@@ -110,46 +153,45 @@ const Profile = () => {
                               className="form-control"
                               id="email"
                               name="email"
-                              placeholder="Ingrese su correo electrónico"
                               value={formData.email}
                               onChange={handleChange}
                               required
                             />
                           </div>
                           <div className="form-group mt-3">
-                            <label htmlFor="password">Contraseña</label>
+                            <label htmlFor="password">Nueva Contraseña (opcional)</label>
                             <input
                               type="password"
                               className="form-control"
                               id="password"
-                              placeholder="Mínimo 8 caracteres"
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
                             />
                           </div>
                           <div className="form-group mt-3">
-                            <label htmlFor="profile_picture">Foto de Perfil</label>
+                            <label htmlFor="profile_picture">URL de la Foto de Perfil</label>
                             <input
                               type="text"
                               className="form-control"
                               id="profile_picture"
                               name="profile_picture"
-                              placeholder="Ingrese URL de la foto de perfil"
                               value={formData.profile_picture}
                               onChange={handleChange}
                             />
                           </div>
-                          <button type="submit" className="btn btn-primary mt-3">
-                            Guardar
-                          </button>
-                          <BackButton />
+                          <button type="submit" className="btn btn-primary mt-3">Guardar Cambios</button>
+                          <button type="button" className="btn btn-secondary mt-3 ms-2" onClick={handleEdit}>Cancelar</button>
                         </form>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <h3>{userSession.username}</h3>
+                    <div className='py-5'>
+                      <h1>
+                        Bienvenido <span className='fw-bold'>{userSession.username}</span>
+                      </h1>
+                    </div>
                     <p>{userSession.email}</p>
                     <button className="btn btn-secondary" onClick={handleEdit}>
                       Editar Perfil
@@ -162,10 +204,11 @@ const Profile = () => {
               </div>
             </div>
             <nav className="nav flex-column">
-              <Link to="/events" className="nav-link">Mis Eventos</Link>
-              <Link to="/profile/tickets" className="nav-link">Mis Tickets</Link>
-              <Link to="/profile/favorites" className="nav-link">Mis Favoritos</Link>
-              <Link to="/cart" className="nav-link">Mi Carrito</Link>
+            <Link to="/profile/events" className="nav-link">crear nuevo</Link>
+              <Link to="/events" className="nav-link">Eventos Disponibles</Link>
+              <Link to="/profile/favorites" className="nav-link">Favoritos</Link>
+              <Link to="/cart" className="nav-link">Carrito</Link>
+              <Link to="/profile/tickets" className="nav-link">Tickets Comprados</Link>
             </nav>
           </div>
         </div>

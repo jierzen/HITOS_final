@@ -1,11 +1,16 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 const useDeveloper = () => {
-  const [userSession, setUserSession] = useState(null)
+  const [userSession, setUserSession] = useState(null);
 
-  const setDeveloper = (develop) => setUserSession(develop)
+  const setDeveloper = (developer) => setUserSession(developer);
 
-  return { getDeveloper: userSession, setDeveloper }
-}
+  const logOut = () => {
+    setUserSession(null);
+    window.sessionStorage.removeItem('token');
+  };
 
-export default useDeveloper
+  return { userSession, setDeveloper, logOut };
+};
+
+export default useDeveloper;

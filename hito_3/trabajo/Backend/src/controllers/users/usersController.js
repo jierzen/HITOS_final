@@ -44,11 +44,6 @@ const update_profile_controller = async (req, res, next) => {
             return res.status(400).json({ error: 'El correo electrónico ya está registrado.' });
         }
 
-        // let passwordHash = null;
-        // if (password) {
-        //     passwordHash = await bcrypt.hash(password, 10);
-        // }
-
         const response = await UsersCollection.updateUser(user_id, email, password, username, profile_picture, is_admin);
         res.status(200).json(response);
     } catch (error) {
