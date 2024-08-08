@@ -42,6 +42,24 @@ export const MarketplaceProvider = ({ children }) => {
     }
   }, [token, userSession.isLoggedIn, navigate]);
 
+  //new
+  const fetchUserEvents = useCallback(async () => {
+    if (token) {
+      try {
+        const response = await axios.get(`${ENDPOINT.perfil}/events`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserSession((prevSession) => ({
+          ...prevSession,
+          events: response.data,
+        }));
+      } catch (error) {
+        console.error("Error al traer eventos del usuario:", error);
+      }
+    }
+  }, [token]);
+
+
   const logIn = async (email, password) => {
     try {
       const response = await axios.post(`${ENDPOINT.login}`, { email, password });
@@ -274,7 +292,8 @@ export const MarketplaceProvider = ({ children }) => {
         updateCart,
         removeFromCart,
         addToCart,
-        buyTickets
+        buyTickets,
+        fetchUserEvents //new
       }}
     >
       {children}

@@ -50,11 +50,24 @@ const deleteEvent = async (event_id) => {
     }
 };
 
+//new
+const getEventsByUserId = async (user_id) => {
+    try {
+        const consulta = "SELECT * FROM eventos WHERE user_id = $1";        
+        const { rows } = await database.query(consulta, [user_id]);
+        console.log("Filas BD:", rows);
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const eventsCollection = {
     addEvent,
     getEvents,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    getEventsByUserId //new
 };
 
 module.exports = { eventsCollection };

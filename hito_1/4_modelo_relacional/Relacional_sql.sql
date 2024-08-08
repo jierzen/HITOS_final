@@ -3,7 +3,7 @@ CREATE DATABASE EVENTOS;
 \c EVENTOS;
 
 -- Usuarios
-CREATE TABLE user (
+CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE user (
 );
 
 -- Eventos
-CREATE TABLE event (
+CREATE TABLE eventos (
     event_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE ticket (
     event_id INT NOT NULL,
     user_id INT NOT NULL,
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (event_id) REFERENCES events(event_id),
+    FOREIGN KEY (event_id) REFERENCES eventos(event_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE favorite (
     event_id INT NOT NULL,
     PRIMARY KEY (user_id, event_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (event_id) REFERENCES events(event_id)
+    FOREIGN KEY (event_id) REFERENCES eventos(event_id)
 );
 
 -- Carrito de Compra
@@ -54,7 +54,7 @@ CREATE TABLE cart (
     event_id INT NOT NULL,
     quantity INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (event_id) REFERENCES events(event_id)
+    FOREIGN KEY (event_id) REFERENCES eventos(event_id)
 );
 
 

@@ -1,4 +1,4 @@
-const { add_user_controller, login_controller, get_profile_controller, update_profile_controller, delete_user_controller } = require('../../controllers/users/usersController')
+const { add_user_controller, login_controller, get_profile_controller, update_profile_controller, delete_user_controller, get_user_events_controller } = require('../../controllers/users/usersController')
 const { handleLoginMiddleware } = require('../../middlewares/handleLogin')
 const { authMiddleware } = require('../../middlewares/authMiddleware')
 
@@ -10,9 +10,7 @@ router.post('/login', handleLoginMiddleware, login_controller,);
 router.get('/perfil', authMiddleware, get_profile_controller);
 router.put('/update/:user_id', update_profile_controller); // Puede agregar authMiddleware si se requiere autenticación
 router.delete('/delete/:user_id', delete_user_controller);
-
-
-
+router.get('/events', authMiddleware, get_user_events_controller); //new
 
 
 module.exports = router

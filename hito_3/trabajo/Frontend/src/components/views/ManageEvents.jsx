@@ -9,6 +9,12 @@ import { ENDPOINT } from "../../config/constans";
 
 const ManageEvents = () => {
   const { userSession, deleteEvent } = useContext(MarketplaceContext);
+
+  //new
+  useEffect(() => {
+    fetchUserEvents(); //cargar los eventos del usuario al montar el componente
+  }, [fetchUserEvents]);
+
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editEvent, setEditEvent] = useState({});
   const [eventList, setEventList] = useState([]);
