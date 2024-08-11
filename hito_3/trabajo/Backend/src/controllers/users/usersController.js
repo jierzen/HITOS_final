@@ -1,5 +1,4 @@
 const { UsersCollection } = require('../../database/models/usersModel');
-const { eventsCollection } = require('../../database/models/eventsModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -77,28 +76,10 @@ const delete_user_controller = async (req, res, next) => {
     }
 };
 
-
-//new
-const get_user_events_controller = async (req, res, next) => {
-    try {
-        const { user_id } = req.user;
-        console.log("ID Usuario:", user_id); //log para verificar el user_id
-  
-        const events = await eventsCollection.getEventsByUserId(user_id);
-        console.log("EVENTOS DEL USUARIO =",events)
-
-        res.json(events);
-        
-    } catch (error) {
-        next(error);
-    }
-};
-
 module.exports = {
     add_user_controller,
     login_controller,
     get_profile_controller,
     update_profile_controller,
-    delete_user_controller,
-    get_user_events_controller
+    delete_user_controller
 };

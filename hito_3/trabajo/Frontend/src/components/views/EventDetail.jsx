@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Button, Form, Image } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { Heart, HeartFill } from "react-bootstrap-icons";
@@ -59,33 +59,31 @@ const EventDetail = () => {
       }}
     >
       <MyNavbar />
-      <div
-        className="container my-5 d-flex justify-content-center"
-        style={{ flex: 1 }}
-      >
-        <div className="card p-4" style={{ width: "100%", maxWidth: "800px" }}>
-          <div style={{ marginBottom: "20px" }}>
-            <h2>{event.title}</h2>
-            <Image src={event.img_url} rounded fluid />
-            <p>{event.description}</p>
-            <p>
-              <strong>Fecha:</strong> {event.date_event}
-            </p>
-            <p>
-              <strong>Ubicación:</strong> {event.location}
-            </p>
-            <p>
-              <strong>Precio del Boleto:</strong> {event.ticket_price} CLP
-            </p>
-            <p>
-              <strong>Boletos Disponibles:</strong> {event.tickets_available}
-            </p>
-          </div>
-          {isOwnEvent ? (
+      <div className="container mt-5" style={{ flex: 1 }}>
+        <h2>{event.title}</h2>
+        <Image src={event.imgUrl} rounded fluid />
+        <p>{event.description}</p>
+        <p>
+          <strong>Fecha:</strong> {event.dateEvent}
+        </p>
+        <p>
+          <strong>Ubicación:</strong> {event.location}
+        </p>
+        <p>
+          <strong>Precio del Boleto:</strong> {event.ticketPrice} CLP
+        </p>
+        <p>
+          <strong>Boletos Disponibles:</strong> {event.ticketsAvailable}
+        </p>
+
+        {isOwnEvent ? (
+          <>
             <Button variant="primary" onClick={handleRedirectMyEvents}>
               Ver en Mis Eventos
             </Button>
-          ) : (
+          </>
+        ) : (
+          <>
             <div className="d-flex align-items-center mb-3">
               <Button variant="success" onClick={handleAddToCart}>
                 Agregar al Carrito
@@ -99,22 +97,16 @@ const EventDetail = () => {
                 className="ms-3"
                 style={{ width: "60px" }}
               />
-              <div
-                onClick={handleToggleFavorite}
-                style={{ cursor: "pointer" }}
-                className="ms-3"
-              >
-                {userSession.favs.some(
-                  (fav) => fav.eventId === event.eventId
-                ) ? (
-                  <HeartFill size={30} color="red" />
-                ) : (
-                  <Heart size={30} />
-                )}
-              </div>
             </div>
-          )}
-        </div>
+            <div onClick={handleToggleFavorite} style={{ cursor: "pointer" }}>
+              {userSession.favs.some((fav) => fav.eventId === event.eventId) ? (
+                <HeartFill size={30} color="red" />
+              ) : (
+                <Heart size={30} />
+              )}
+            </div>
+          </>
+        )}
       </div>
       <MyFooter />
     </div>
@@ -122,123 +114,3 @@ const EventDetail = () => {
 };
 
 export default EventDetail;
-
-/* 
-import React, { useState, useEffect } from "react";
-import { Form, Button } from "react-bootstrap";
-import axios from "axios";
-import { ENDPOINT } from "../../config/constans";
-
-const EventDetail = ({ event, onSave }) => {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    date: "",
-    location: "",
-    ticketPrice: "",
-    ticketsAvailable: "",
-    imgUrl: "",
-  });
-
-  useEffect(() => {
-    if (event) {
-      setFormData({
-        title: event.title || "",
-        description: event.description || "",
-        date: event.dateEvent
-          ? new Date(event.dateEvent).toISOString().split("T")[0]
-          : "",
-        location: event.location || "",
-        ticketPrice: event.ticketPrice || "",
-        ticketsAvailable: event.ticketsAvailable || "",
-        imgUrl: event.imgUrl || "",
-      });
-    }
-  }, [event]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData); // Pasar datos del formulario a la función onSave
-  };
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group controlId="formTitle">
-        <Form.Label>Título</Form.Label>
-        <Form.Control
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Form.Group controlId="formDescription">
-        <Form.Label>Descripción</Form.Label>
-        <Form.Control
-          as="textarea"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Form.Group controlId="formDateEvent">
-        <Form.Label>Fecha</Form.Label>
-        <Form.Control
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Form.Group controlId="formLocation">
-        <Form.Label>Ubicación</Form.Label>
-        <Form.Control
-          type="text"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Form.Group controlId="formTicketPrice">
-        <Form.Label>Precio del Boleto</Form.Label>
-        <Form.Control
-          type="number"
-          name="ticketPrice"
-          value={formData.ticketPrice}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Form.Group controlId="formTicketsAvailable">
-        <Form.Label>Boletos Disponibles</Form.Label>
-        <Form.Control
-          type="number"
-          name="ticketsAvailable"
-          value={formData.ticketsAvailable}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Form.Group controlId="formImgUrl">
-        <Form.Label>URL de la Imagen</Form.Label>
-        <Form.Control
-          type="text"
-          name="imgUrl"
-          value={formData.imgUrl}
-          onChange={handleChange}
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit" className="mt-3">
-        Guardar Evento
-      </Button>
-    </Form>
-  );
-};
-
-export default EventDetail; */
